@@ -1,84 +1,101 @@
 "use client";
-import { useState } from "react";
-import { Trophy, Users, Calendar, DollarSign, ChevronDown, ChevronUp, CheckCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Trophy, Users, Calendar, ChevronDown, ChevronUp, CheckCircle, LogIn } from "lucide-react";
+import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
+import toast from "react-hot-toast";
 
-const TOURNAMENTS = [
-  { id: 1, title: "eFootball Spring Cup 2025", game: "eFootball Mobile", date: "Jun 15, 2025", prize: "KSh 50,000", spots: 16, filled: 9, format: "1v1 Knockout", status: "open", desc: "Open to all eFootball mobile players. Best-of-3 knockout rounds. Finals streamed live on YouTube." },
-  { id: 2, title: "PUBG Nairobi Classic", game: "PUBG Mobile", date: "Jun 22, 2025", prize: "KSh 30,000", spots: 20, filled: 14, format: "Squad (4v4)", status: "open", desc: "Squad tournament. 5 matches on Erangel and Miramar. Top 3 squads win prizes. Must be Gold+ rank." },
-  { id: 3, title: "KG254 Weekly Clash #12", game: "eFootball Console", date: "Jun 8, 2025", prize: "KSh 5,000", spots: 8, filled: 8, format: "1v1 Knockout", status: "live", desc: "Weekly console tournament, currently underway. Watch live on Twitch." },
-  { id: 4, title: "PUBG Legends Invitational", game: "PUBG PC", date: "Jul 5, 2025", prize: "KSh 100,000", spots: 24, filled: 0, format: "Trio (3v3)", status: "upcoming", desc: "K.G 254's biggest PUBG tournament. Invite-only for top 24 ranked Kenyan players. Full production stream." },
-  { id: 5, title: "eFootball Champions League", game: "eFootball Mobile", date: "Jul 20, 2025", prize: "KSh 75,000", spots: 32, filled: 0, format: "League + Knockout", status: "upcoming", desc: "32-player league phase followed by a knockout stage. Season passes available for subscribers." },
-];
+type Tournament = { id: string; title: string; game: string; date: string; prize: string; spots: number; registered_count: number; format: string; status: string; description: string; };
 
-function TournamentCard({ t }: { t: typeof TOURNAMENTS[0] }) {
+const STATUS_STYLES: Record<string, { label: string; color: string; badgeClass: string }> = {
+  live:     { label: "🔴 LIVE",    color: "#ff2244", badgeClass: "badge-red" },
+  open:     { label: "OPEN",       color: "#00ff88", badgeClass: "badge-green" },
+  upcoming: { label: "SOON",       color: "#00d4ff", badgeClass: "badge-cyan" },
+  ended:    { label: "ENDED",      color: "#8a9bb5", badgeClass: "badge-cyan" },
+};
+
+function TournamentCard({ t, userId }: { t: Tournament; userId?: string }) {
   const [expanded, setExpanded] = useState(false);
+  const [registering, setRegistering] = useState(false);
   const [registered, setRegistered] = useState(false);
-  const pct = (t.filled / t.spots) * 100;
+  const pct = Math.min((t.registered_count / t.spots) * 100, 100);
+  const st = STATUS_STYLES[t.status] || STATUS_STYLES.upcoming;
+  const isFull = t.registered_count >= t.spots;
+
+  const handleRegister = async () => {
+    if (!userId) return toast.error("Login to register for tournaments");
+    setRegistering(true);
+    try {
+      const res = await fetch(`/api/tournaments/${t.id}/register`, { method: "POST" });
+      const data = await res.json();
+      if (data.error) return toast.error(data.error);
+      toast.success(data.message || "Registered!");
+      setRegistered(true);
+    } finally { setRegistering(false); }
+  };
 
   return (
     <div className="game-card" style={{ padding: "1.5rem" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "0.5rem", marginBottom: "1rem" }}>
-        <div>
-          <span className={t.status === "live" ? "badge-red" : t.status === "open" ? "badge-green" : "badge-cyan"} style={{ marginRight: 8 }}>
-            {t.status === "live" ? "🔴 LIVE" : t.status === "open" ? "OPEN" : "SOON"}
-          </span>
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+          <span className={st.badgeClass}>{st.label}</span>
           <span className="badge-orange">{t.game}</span>
         </div>
-        <div style={{ fontFamily: "Orbitron, monospace", fontWeight: 900, fontSize: "1.1rem", color: "#ff6b00" }}>
-          {t.prize}
-        </div>
+        <span style={{ fontFamily: "Orbitron,monospace", fontWeight: 900, fontSize: "1.1rem", color: "#ff6b00" }}>{t.prize}</span>
       </div>
 
-      <h3 style={{ fontFamily: "Orbitron, monospace", fontSize: "1.1rem", color: "#e8f4ff", marginBottom: "1rem", lineHeight: 1.3 }}>{t.title}</h3>
+      <h3 style={{ fontFamily: "Orbitron,monospace", fontSize: "1.05rem", color: "#e8f4ff", marginBottom: "1rem", lineHeight: 1.3 }}>{t.title}</h3>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", marginBottom: "1rem" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.4rem", marginBottom: "1rem" }}>
         {[
-          { Icon: Calendar, text: t.date },
-          { Icon: Trophy, text: t.format },
-          { Icon: Users, text: `${t.filled}/${t.spots} players` },
-          { Icon: DollarSign, text: t.prize },
-        ].map(({ Icon, text }) => (
+          { icon: "📅", text: new Date(t.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) },
+          { icon: "🏆", text: t.format },
+          { icon: "👥", text: `${t.registered_count}/${t.spots} players` },
+          { icon: "💰", text: t.prize },
+        ].map(({ icon, text }) => (
           <div key={text} style={{ display: "flex", alignItems: "center", gap: "0.4rem", color: "#8a9bb5", fontSize: "0.85rem" }}>
-            <Icon size={13} color="#00ff88" /> {text}
+            <span>{icon}</span> {text}
           </div>
         ))}
       </div>
 
       {/* Progress bar */}
       <div style={{ marginBottom: "1rem" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", color: "#8a9bb5", marginBottom: 4 }}>
-          <span>Spots filled</span><span style={{ color: pct >= 100 ? "#ff2244" : "#00ff88" }}>{t.filled}/{t.spots}</span>
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.72rem", color: "#8a9bb5", marginBottom: 3 }}>
+          <span>Spots filled</span>
+          <span style={{ color: isFull ? "#ff2244" : "#00ff88" }}>{t.registered_count}/{t.spots}</span>
         </div>
         <div style={{ height: 4, background: "#1a2840", borderRadius: 2 }}>
-          <div style={{ height: "100%", width: `${pct}%`, background: pct >= 100 ? "#ff2244" : "linear-gradient(90deg, #00ff88, #00d4ff)", borderRadius: 2, transition: "width 0.5s" }} />
+          <div style={{ height: "100%", width: `${pct}%`, background: isFull ? "#ff2244" : "linear-gradient(90deg,#00ff88,#00d4ff)", borderRadius: 2, transition: "width 0.6s ease" }} />
         </div>
       </div>
 
-      {expanded && (
-        <p style={{ color: "#8a9bb5", fontSize: "0.9rem", lineHeight: 1.6, marginBottom: "1rem", borderTop: "1px solid #1a2840", paddingTop: "1rem" }}>{t.desc}</p>
+      {expanded && t.description && (
+        <p style={{ color: "#8a9bb5", fontSize: "0.88rem", lineHeight: 1.6, borderTop: "1px solid #1a2840", paddingTop: "1rem", marginBottom: "1rem" }}>{t.description}</p>
       )}
 
       <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", flexWrap: "wrap" }}>
-        {t.status !== "live" && t.filled < t.spots && !registered && (
-          <button onClick={() => setRegistered(true)} className="btn-primary" style={{ padding: "0.5rem 1.2rem", fontSize: "0.72rem" }}>
-            Register Now
+        {t.status === "live" ? (
+          <a href="https://twitch.tv/KenyanGamer254" target="_blank" rel="noopener noreferrer" className="btn-danger" style={{ padding: "0.45rem 1.1rem", fontSize: "0.7rem" }}>Watch Live</a>
+        ) : t.status === "ended" ? (
+          <span style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.75rem", color: "#8a9bb5" }}>Tournament ended</span>
+        ) : isFull && !registered ? (
+          <span style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.75rem", color: "#ff2244" }}>FULL — Waitlist coming soon</span>
+        ) : registered ? (
+          <div style={{ display: "flex", alignItems: "center", gap: 6, color: "#00ff88", fontFamily: "Share Tech Mono,monospace", fontSize: "0.8rem" }}>
+            <CheckCircle size={15} /> You're registered!
+          </div>
+        ) : !userId ? (
+          <Link href="/login" style={{ display: "flex", alignItems: "center", gap: 6, color: "#00ff88", fontFamily: "Orbitron,monospace", fontSize: "0.72rem", textDecoration: "none", border: "1px solid #00ff88", padding: "0.45rem 1rem" }}>
+            <LogIn size={12} /> Login to Register
+          </Link>
+        ) : (
+          <button className="btn-primary" style={{ padding: "0.45rem 1.1rem", fontSize: "0.7rem", opacity: registering ? 0.7 : 1 }} onClick={handleRegister} disabled={registering}>
+            {registering ? "Registering..." : "Register Now"}
           </button>
         )}
-        {registered && (
-          <div style={{ display: "flex", alignItems: "center", gap: 6, color: "#00ff88", fontFamily: "Share Tech Mono, monospace", fontSize: "0.8rem" }}>
-            <CheckCircle size={16} /> Registered!
-          </div>
-        )}
-        {t.status === "live" && (
-          <a href="https://twitch.tv/KenyanGamer254" target="_blank" rel="noopener noreferrer" className="btn-danger" style={{ padding: "0.5rem 1.2rem", fontSize: "0.72rem" }}>
-            Watch Live
-          </a>
-        )}
-        {t.filled >= t.spots && t.status !== "live" && (
-          <span style={{ fontFamily: "Share Tech Mono, monospace", fontSize: "0.75rem", color: "#ff2244" }}>FULL — Join Waitlist</span>
-        )}
-        <button onClick={() => setExpanded(!expanded)} style={{ marginLeft: "auto", background: "none", border: "none", color: "#8a9bb5", cursor: "pointer", display: "flex", alignItems: "center", gap: 4, fontSize: "0.85rem" }}>
-          {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />} Details
+        <button onClick={() => setExpanded(p => !p)} style={{ marginLeft: "auto", background: "none", border: "none", color: "#8a9bb5", cursor: "pointer", display: "flex", alignItems: "center", gap: 3, fontSize: "0.85rem" }}>
+          {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />} Details
         </button>
       </div>
     </div>
@@ -86,24 +103,46 @@ function TournamentCard({ t }: { t: typeof TOURNAMENTS[0] }) {
 }
 
 export default function TournamentsPage() {
+  const { user } = useAuth();
+  const [tournaments, setTournaments] = useState<Tournament[]>([]);
+  const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("All");
-  const tabs = ["All", "Open", "Live", "Upcoming"];
-  const filtered = tab === "All" ? TOURNAMENTS : TOURNAMENTS.filter(t => t.status === tab.toLowerCase());
+  const tabs = ["All", "Open", "Live", "Upcoming", "Ended"];
+
+  useEffect(() => {
+    fetch("/api/tournaments")
+      .then(r => r.json())
+      .then(d => { setTournaments(Array.isArray(d) ? d : []); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const filtered = tab === "All" ? tournaments : tournaments.filter(t => t.status.toLowerCase() === tab.toLowerCase());
+  const liveCount = tournaments.filter(t => t.status === "live").length;
+  const openCount = tournaments.filter(t => t.status === "open").length;
+  const totalPrize = tournaments.reduce((sum, t) => {
+    const m = t.prize?.match(/[\d,]+/);
+    return sum + (m ? parseInt(m[0].replace(/,/g, "")) : 0);
+  }, 0);
 
   return (
     <div style={{ paddingTop: 64 }}>
       <div style={{ background: "#080f1a", padding: "4rem 1.5rem 3rem", borderBottom: "1px solid #1a2840" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto" }}>
-          <div style={{ fontFamily: "Share Tech Mono, monospace", fontSize: "0.75rem", color: "#00ff88", marginBottom: 6, letterSpacing: "0.15em" }}>// K.G 254</div>
+          <div style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.75rem", color: "#00ff88", marginBottom: 6, letterSpacing: "0.15em" }}>// K.G 254</div>
           <h1 className="section-title" style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>Tournaments</h1>
-          <p style={{ color: "#8a9bb5", fontSize: "1.1rem", maxWidth: 600, marginBottom: "2rem" }}>
+          <p style={{ color: "#8a9bb5", fontSize: "1.05rem", maxWidth: 600, marginBottom: "2rem" }}>
             Compete in official KenyanGamer254 tournaments. Win cash prizes, get featured on stream, and earn community glory.
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "1rem", maxWidth: 600 }}>
-            {[["5", "Active Tournaments"], ["KSh 260K", "Total Prize Pool"], ["48", "Past Events"]].map(([v, l]) => (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "1rem", maxWidth: 560 }}>
+            {[
+              { v: tournaments.length, l: "Total Tournaments" },
+              { v: liveCount, l: "Live Now", c: liveCount > 0 ? "#ff2244" : undefined },
+              { v: openCount, l: "Open for Entry", c: "#00ff88" },
+              { v: `KSh ${totalPrize.toLocaleString()}`, l: "Total Prize Pool", c: "#ff6b00" },
+            ].map(({ v, l, c }) => (
               <div key={l} className="game-card" style={{ padding: "1rem", textAlign: "center" }}>
-                <div style={{ fontFamily: "Orbitron, monospace", fontWeight: 900, fontSize: "1.5rem", color: "#00ff88" }}>{v}</div>
-                <div style={{ fontSize: "0.8rem", color: "#8a9bb5" }}>{l}</div>
+                <div style={{ fontFamily: "Orbitron,monospace", fontWeight: 900, fontSize: "1.4rem", color: c || "#00ff88" }}>{v}</div>
+                <div style={{ fontSize: "0.78rem", color: "#8a9bb5", marginTop: 2 }}>{l}</div>
               </div>
             ))}
           </div>
@@ -111,10 +150,10 @@ export default function TournamentsPage() {
       </div>
 
       <div style={{ background: "#040810", borderBottom: "1px solid #1a2840", padding: "1rem 1.5rem" }}>
-        <div style={{ maxWidth: 1280, margin: "0 auto", display: "flex", gap: "0.5rem" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
           {tabs.map(t => (
             <button key={t} onClick={() => setTab(t)}
-              style={{ background: tab === t ? "#00ff88" : "transparent", color: tab === t ? "#040810" : "#8a9bb5", border: "1px solid", borderColor: tab === t ? "#00ff88" : "#1a2840", fontFamily: "Rajdhani, sans-serif", fontWeight: 600, padding: "0.4rem 1rem", cursor: "pointer", transition: "all 0.2s", fontSize: "0.95rem" }}>
+              style={{ background: tab === t ? "#00ff88" : "transparent", color: tab === t ? "#040810" : "#8a9bb5", border: "1px solid", borderColor: tab === t ? "#00ff88" : "#1a2840", fontFamily: "Rajdhani,sans-serif", fontWeight: 600, padding: "0.4rem 1rem", cursor: "pointer", transition: "all 0.2s", fontSize: "0.95rem" }}>
               {t}
             </button>
           ))}
@@ -122,13 +161,17 @@ export default function TournamentsPage() {
       </div>
 
       <div style={{ maxWidth: 1280, margin: "0 auto", padding: "3rem 1.5rem" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "1.5rem" }}>
-          {filtered.map(t => <TournamentCard key={t.id} t={t} />)}
-        </div>
-        {filtered.length === 0 && (
-          <div style={{ textAlign: "center", padding: "4rem", color: "#8a9bb5" }}>
-            <Trophy size={48} style={{ margin: "0 auto 1rem", opacity: 0.3 }} />
-            <div style={{ fontFamily: "Orbitron, monospace" }}>No tournaments in this category</div>
+        {loading ? (
+          <div style={{ textAlign: "center", padding: "4rem", color: "#8a9bb5", fontFamily: "Share Tech Mono,monospace" }}>Loading tournaments...</div>
+        ) : (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "1.5rem" }}>
+            {filtered.map(t => <TournamentCard key={t.id} t={t} userId={user?.id} />)}
+            {filtered.length === 0 && (
+              <div style={{ gridColumn: "1/-1", textAlign: "center", padding: "4rem", color: "#8a9bb5" }}>
+                <Trophy size={48} style={{ margin: "0 auto 1rem", opacity: 0.3 }} />
+                <div style={{ fontFamily: "Orbitron,monospace", fontSize: "0.9rem" }}>No tournaments in this category</div>
+              </div>
+            )}
           </div>
         )}
       </div>

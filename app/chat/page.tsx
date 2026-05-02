@@ -1,235 +1,349 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import { Send, Hash, Users, Shield, Gamepad2, Trophy, MessageSquare, Smile } from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { Send, Hash, Users, Shield, Gamepad2, Trophy, MessageSquare, Smile, LogIn } from "lucide-react";
+import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
+import { createBrowserClient } from "@/lib/supabase";
+import toast from "react-hot-toast";
+import { formatDistanceToNow } from "date-fns";
 
-type Message = { id: number; user: string; text: string; time: string; role: "admin" | "member" | "sub" | "guest"; color: string };
-
-const INITIAL_MESSAGES: Message[] = [
-  { id: 1, user: "KenyanGamer254", text: "Welcome to the K.G 254 Live Chat! Let's go 🔥", time: "20:01", role: "admin", color: "#00ff88" },
-  { id: 2, user: "EagleFC254", text: "Yooo KG! Ready for tonight's eFootball match!", time: "20:02", role: "sub", color: "#00d4ff" },
-  { id: 3, user: "PUBGKingKE", text: "When's the next PUBG tournament? I'm in!", time: "20:03", role: "member", color: "#ff6b00" },
-  { id: 4, user: "NairobiGamer", text: "Been watching since day 1, bro! Keep it up 🙌", time: "20:04", role: "sub", color: "#9147ff" },
-  { id: 5, user: "KenyanGamer254", text: "PUBG Classic is June 22nd — register on the Tournaments page!", time: "20:05", role: "admin", color: "#00ff88" },
-  { id: 6, user: "FootballFreak", text: "eFootball Mobile tips were 🔥 last stream", time: "20:06", role: "member", color: "#e8f4ff" },
-];
-
-const ROLE_BADGES: Record<string, { label: string; color: string }> = {
-  admin: { label: "ADMIN", color: "#00ff88" },
-  sub: { label: "SUB", color: "#9147ff" },
-  member: { label: "MEMBER", color: "#00d4ff" },
-  guest: { label: "GUEST", color: "#8a9bb5" },
+type ChatMessage = {
+  id: string; message: string; channel: string; created_at: string;
+  username: string; role: string; plan: string; avatar: string;
 };
 
 const CHANNELS = [
-  { name: "general", Icon: Hash, active: true },
-  { name: "tournaments", Icon: Trophy, active: false },
-  { name: "efootball", Icon: Gamepad2, active: false },
-  { name: "pubg", Icon: Gamepad2, active: false },
-  { name: "mods-only", Icon: Shield, active: false },
+  { name: "general",     Icon: Hash,      label: "General" },
+  { name: "tournaments", Icon: Trophy,    label: "Tournaments" },
+  { name: "efootball",   Icon: Gamepad2,  label: "eFootball" },
+  { name: "pubg",        Icon: Gamepad2,  label: "PUBG" },
 ];
-
-const ONLINE_USERS = [
-  { name: "KenyanGamer254", role: "admin" }, { name: "EagleFC254", role: "sub" },
-  { name: "PUBGKingKE", role: "member" }, { name: "NairobiGamer", role: "sub" },
-  { name: "FootballFreak", role: "member" }, { name: "Gamer_Ke01", role: "guest" },
-  { name: "TopShot254", role: "member" }, { name: "EliteSquad", role: "sub" },
-];
-
-const EMOJIS = ["🔥", "🎮", "🏆", "👑", "💥", "🙌", "🇰🇪", "⚽", "🎯", "😂", "👏", "💪"];
+const ROLE_COLORS: Record<string, string>  = { admin: "#00ff88", subscriber: "#9147ff", member: "#00d4ff", guest: "#8a9bb5" };
+const ROLE_LABELS: Record<string, string>  = { admin: "ADMIN", subscriber: "SUB", member: "MEMBER", guest: "GUEST" };
+const PLAN_COLORS: Record<string, string>  = { admin: "#00ff88", elite: "#ff6b00", pro: "#9147ff", basic: "#00d4ff" };
+const EMOJIS = ["🔥","🎮","🏆","👑","💥","🙌","🇰🇪","⚽","🎯","😂","👏","💪","🤣","😎","🥇","⚡"];
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
-  const [input, setInput] = useState("");
-  const [username, setUsername] = useState("");
-  const [joined, setJoined] = useState(false);
-  const [channel, setChannel] = useState("general");
-  const [showEmoji, setShowEmoji] = useState(false);
-  const [onlineCount] = useState(ONLINE_USERS.length);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+  const [messages, setMessages]         = useState<ChatMessage[]>([]);
+  const [input, setInput]               = useState("");
+  const [channel, setChannel]           = useState("general");
+  const [showEmoji, setShowEmoji]       = useState(false);
+  const [onlineCount, setOnlineCount]   = useState(0);
+  const [channelCount, setChannelCount] = useState(0);
+  const [typingUsers, setTypingUsers]   = useState<string[]>([]);
+  const [loadingHistory, setLoading]    = useState(true);
+  const [sending, setSending]           = useState(false);
+  const bottomRef    = useRef<HTMLDivElement>(null);
+  const typingTimer  = useRef<NodeJS.Timeout | null>(null);
+  const supabase     = createBrowserClient();
 
+  // Scroll to bottom
+  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+
+  // Load chat history
+  const loadHistory = useCallback(async (ch: string) => {
+    setLoading(true);
+    try {
+      const res  = await fetch(`/api/chat/history?channel=${ch}`);
+      const data = await res.json();
+      setMessages(Array.isArray(data) ? data : []);
+    } catch { setMessages([]); }
+    finally { setLoading(false); }
+  }, []);
+
+  // Subscribe to Supabase Realtime for new messages
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    loadHistory(channel);
 
-  // Simulate incoming messages
-  useEffect(() => {
-    if (!joined) return;
-    const BOTS = [
-      { user: "Gamer_Ke01", text: "Let's gooo!! 🔥", role: "guest" as const, color: "#8a9bb5" },
-      { user: "TopShot254", text: "KG's passes are unreal 😂", role: "member" as const, color: "#e8f4ff" },
-      { user: "EliteSquad", text: "Next tourney registration open yet?", role: "sub" as const, color: "#9147ff" },
-    ];
-    const interval = setInterval(() => {
-      const bot = BOTS[Math.floor(Math.random() * BOTS.length)];
-      setMessages(prev => [...prev, {
-        id: Date.now(),
-        ...bot,
-        time: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false }),
-      }]);
-    }, 8000);
-    return () => clearInterval(interval);
-  }, [joined]);
+    const subscription = supabase
+      .channel(`chat:${channel}`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "chat_messages", filter: `channel=eq.${channel}` },
+        async (payload) => {
+          // Fetch the full message with user join
+          const { data } = await supabase
+            .from("chat_messages")
+            .select("id, message, channel, created_at, users!user_id(username, role, plan, avatar)")
+            .eq("id", payload.new.id)
+            .single();
 
-  const sendMessage = () => {
-    if (!input.trim() || !joined) return;
-    const msg: Message = {
-      id: Date.now(),
-      user: username || "Guest",
-      text: input,
-      time: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false }),
-      role: "guest",
-      color: "#8a9bb5",
+          if (data) {
+            const msg: ChatMessage = {
+              id:         (data as any).id,
+              message:    (data as any).message,
+              channel:    (data as any).channel,
+              created_at: (data as any).created_at,
+              username:   (data as any).users?.username || "Unknown",
+              role:       (data as any).users?.role     || "member",
+              plan:       (data as any).users?.plan     || "none",
+              avatar:     (data as any).users?.avatar   || "?",
+            };
+            setMessages(prev => {
+              // Deduplicate — if we already have this id (from optimistic update) skip
+              if (prev.some(m => m.id === msg.id)) return prev;
+              return [...prev.slice(-199), msg];
+            });
+          }
+        }
+      )
+      .subscribe((status) => {
+        if (status === "SUBSCRIBED") setOnlineCount(p => p || 1);
+      });
+
+    // Presence for online count
+    const presenceChannel = supabase.channel("online");
+    presenceChannel
+      .on("presence", { event: "sync" }, () => {
+        const state = presenceChannel.presenceState();
+        setOnlineCount(Object.keys(state).length);
+      })
+      .subscribe(async (status) => {
+        if (status === "SUBSCRIBED") {
+          await presenceChannel.track({ user_id: user?.id || "guest", channel, at: new Date().toISOString() });
+        }
+      });
+
+    return () => {
+      supabase.removeChannel(subscription);
+      supabase.removeChannel(presenceChannel);
     };
-    setMessages(prev => [...prev, msg]);
-    setInput("");
-    setShowEmoji(false);
+  }, [channel, user?.id]);
+
+  const switchChannel = (ch: string) => {
+    setChannel(ch);
+    setMessages([]);
+    setTypingUsers([]);
   };
 
-  if (!joined) {
-    return (
-      <div style={{ paddingTop: 64, minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
-        <div className="game-card" style={{ padding: "2.5rem", maxWidth: 420, width: "100%", textAlign: "center" }}>
-          <div style={{ width: 64, height: 64, background: "rgba(0,255,136,0.1)", border: "2px solid #00ff88", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.5rem" }} className="pulse-green">
-            <MessageSquare size={28} color="#00ff88" />
-          </div>
-          <h2 style={{ fontFamily: "Orbitron, monospace", fontWeight: 900, fontSize: "1.5rem", marginBottom: "0.5rem", color: "#e8f4ff" }}>Join Live Chat</h2>
-          <p style={{ color: "#8a9bb5", fontSize: "0.95rem", marginBottom: "2rem" }}>Enter a username to join the K.G 254 community chat.</p>
-          <input
-            className="game-input"
-            placeholder="Your gamertag (e.g. EagleFC254)"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && username.trim() && setJoined(true)}
-            style={{ marginBottom: "1rem" }}
-          />
-          <button className="btn-primary" style={{ width: "100%" }} onClick={() => username.trim() && setJoined(true)}>
-            Enter Chat
-          </button>
-          <div style={{ marginTop: "1.5rem", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, color: "#8a9bb5", fontSize: "0.85rem" }}>
-            <div className="live-dot" style={{ width: 6, height: 6 }} />
-            {onlineCount} users online now
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const sendMessage = async () => {
+    if (!input.trim() || sending) return;
+    if (!user) { toast.error("Login to send messages"); return; }
+
+    const optimisticId = `opt-${Date.now()}`;
+    const optimistic: ChatMessage = {
+      id: optimisticId, message: input.trim(), channel,
+      created_at: new Date().toISOString(),
+      username: user.username, role: user.role, plan: user.plan, avatar: user.avatar,
+    };
+
+    setMessages(prev => [...prev, optimistic]);
+    setInput("");
+    setShowEmoji(false);
+    setSending(true);
+
+    try {
+      const res  = await fetch("/api/chat/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ channel, message: optimistic.message }),
+      });
+      const data = await res.json();
+      if (data.error) {
+        toast.error(data.error);
+        // Remove optimistic message on error
+        setMessages(prev => prev.filter(m => m.id !== optimisticId));
+        setInput(optimistic.message);
+      } else {
+        // Replace optimistic with real message
+        setMessages(prev => prev.map(m => m.id === optimisticId ? { ...data } : m));
+      }
+    } catch {
+      setMessages(prev => prev.filter(m => m.id !== optimisticId));
+      setInput(optimistic.message);
+      toast.error("Failed to send message");
+    } finally { setSending(false); }
+  };
+
+  const currentCh = CHANNELS.find(c => c.name === channel);
+  const getTime = (d: string) => { try { return formatDistanceToNow(new Date(d), { addSuffix: true }); } catch { return ""; } };
 
   return (
     <div style={{ paddingTop: 64, height: "100vh", display: "flex", flexDirection: "column" }}>
       <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
-        {/* Sidebar — channels */}
-        <div style={{ width: 200, background: "#080f1a", borderRight: "1px solid #1a2840", display: "flex", flexDirection: "column", flexShrink: 0 }} className="sidebar-desktop">
+
+        {/* Left sidebar */}
+        <div style={{ width: 220, background: "#080f1a", borderRight: "1px solid #1a2840", display: "flex", flexDirection: "column", flexShrink: 0 }} className="sidebar-lg">
           <div style={{ padding: "1rem", borderBottom: "1px solid #1a2840" }}>
-            <div style={{ fontFamily: "Orbitron, monospace", fontWeight: 700, fontSize: "0.8rem", color: "#00ff88" }}>K.G 254</div>
-            <div style={{ fontFamily: "Share Tech Mono, monospace", fontSize: "0.65rem", color: "#8a9bb5", marginTop: 2 }}>COMMUNITY</div>
+            <div style={{ fontFamily: "Orbitron,monospace", fontWeight: 900, fontSize: "0.88rem", color: "#00ff88" }}>K.G 254 Chat</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 4 }}>
+              <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#00ff88" }} className="pulse-green" />
+              <span style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.65rem", color: "#00ff88" }}>
+                LIVE · {onlineCount} online
+              </span>
+            </div>
           </div>
+
           <div style={{ padding: "0.75rem 0.5rem" }}>
-            <div style={{ fontFamily: "Share Tech Mono, monospace", fontSize: "0.65rem", color: "#8a9bb5", padding: "0 0.5rem", marginBottom: "0.5rem", letterSpacing: "0.1em" }}>CHANNELS</div>
+            <div style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.62rem", color: "#8a9bb5", padding: "0 0.5rem", marginBottom: "0.5rem", letterSpacing: "0.1em" }}>CHANNELS</div>
             {CHANNELS.map(ch => (
-              <button key={ch.name} onClick={() => setChannel(ch.name)}
-                style={{ display: "flex", alignItems: "center", gap: "0.4rem", width: "100%", padding: "0.4rem 0.5rem", background: channel === ch.name ? "rgba(0,255,136,0.1)" : "none", border: "none", color: channel === ch.name ? "#00ff88" : "#8a9bb5", cursor: "pointer", fontSize: "0.9rem", fontFamily: "Rajdhani, sans-serif", transition: "all 0.15s", borderLeft: channel === ch.name ? "2px solid #00ff88" : "2px solid transparent" }}>
+              <button key={ch.name} onClick={() => switchChannel(ch.name)}
+                style={{ display: "flex", alignItems: "center", gap: "0.5rem", width: "100%", padding: "0.5rem 0.6rem", background: channel === ch.name ? "rgba(0,255,136,0.08)" : "none", border: "none", color: channel === ch.name ? "#00ff88" : "#8a9bb5", cursor: "pointer", fontSize: "0.9rem", fontFamily: "Rajdhani,sans-serif", fontWeight: 600, transition: "all 0.15s", borderLeft: channel === ch.name ? "2px solid #00ff88" : "2px solid transparent" }}>
                 <ch.Icon size={14} /> #{ch.name}
               </button>
             ))}
+            {user?.role === "admin" && (
+              <button onClick={() => switchChannel("mods-only")}
+                style={{ display: "flex", alignItems: "center", gap: "0.5rem", width: "100%", padding: "0.5rem 0.6rem", background: channel === "mods-only" ? "rgba(0,255,136,0.08)" : "none", border: "none", color: channel === "mods-only" ? "#00ff88" : "#8a9bb5", cursor: "pointer", fontSize: "0.9rem", fontFamily: "Rajdhani,sans-serif", fontWeight: 600, borderLeft: channel === "mods-only" ? "2px solid #00ff88" : "2px solid transparent" }}>
+                <Shield size={14} /> #mods-only
+              </button>
+            )}
           </div>
-          <div style={{ padding: "0.75rem 0.5rem", borderTop: "1px solid #1a2840", marginTop: "auto" }}>
-            <div style={{ fontFamily: "Share Tech Mono, monospace", fontSize: "0.65rem", color: "#8a9bb5", padding: "0 0.5rem", marginBottom: "0.5rem", letterSpacing: "0.1em" }}>ONLINE — {onlineCount}</div>
-            {ONLINE_USERS.slice(0, 5).map(u => (
-              <div key={u.name} style={{ display: "flex", alignItems: "center", gap: "0.4rem", padding: "0.3rem 0.5rem" }}>
-                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#00ff88", flexShrink: 0 }} />
-                <span style={{ fontSize: "0.8rem", color: "#8a9bb5", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{u.name}</span>
+
+          {user && (
+            <div style={{ marginTop: "auto", borderTop: "1px solid #1a2840", padding: "0.75rem 1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <div style={{ width: 28, height: 28, borderRadius: "50%", background: `${ROLE_COLORS[user.role] || "#8a9bb5"}20`, border: `1px solid ${ROLE_COLORS[user.role] || "#8a9bb5"}50`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.7rem", fontFamily: "Orbitron,monospace", fontWeight: 900, color: ROLE_COLORS[user.role] || "#8a9bb5", flexShrink: 0 }}>
+                {(user.avatar || user.username[0]).slice(0, 2)}
               </div>
-            ))}
-          </div>
+              <div style={{ overflow: "hidden" }}>
+                <div style={{ fontSize: "0.82rem", fontFamily: "Rajdhani,sans-serif", fontWeight: 700, color: ROLE_COLORS[user.role] || "#8a9bb5", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.username}</div>
+                <div style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.6rem", color: "#8a9bb5" }}>{ROLE_LABELS[user.role] || "MEMBER"}</div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Main chat */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-          {/* Channel header */}
+          {/* Header */}
           <div style={{ background: "#040810", borderBottom: "1px solid #1a2840", padding: "0.75rem 1.25rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <Hash size={16} color="#00ff88" />
-            <span style={{ fontFamily: "Orbitron, monospace", fontWeight: 700, fontSize: "0.9rem", color: "#e8f4ff" }}>{channel}</span>
-            <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6, fontFamily: "Share Tech Mono, monospace", fontSize: "0.75rem", color: "#8a9bb5" }}>
-              <div className="live-dot" style={{ width: 6, height: 6 }} />
-              {onlineCount} online
+            {currentCh && <currentCh.Icon size={16} color="#00ff88" />}
+            <span style={{ fontFamily: "Orbitron,monospace", fontWeight: 700, fontSize: "0.88rem", color: "#e8f4ff" }}>#{channel}</span>
+            <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "1rem" }}>
+              <span style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.72rem", color: "#8a9bb5", display: "flex", alignItems: "center", gap: 4 }}>
+                <Users size={12} /> {onlineCount} online
+              </span>
             </div>
           </div>
 
           {/* Messages */}
-          <div style={{ flex: 1, overflowY: "auto", padding: "1rem 1.25rem", display: "flex", flexDirection: "column", gap: "0.1rem" }} className="scrollbar-hide">
-            {messages.map(msg => {
-              const badge = ROLE_BADGES[msg.role];
+          <div style={{ flex: 1, overflowY: "auto", padding: "1rem 1.25rem", display: "flex", flexDirection: "column", gap: "0.05rem" }} className="scrollbar-hide">
+            {loadingHistory && (
+              <div style={{ textAlign: "center", padding: "2rem", color: "#8a9bb5", fontFamily: "Share Tech Mono,monospace", fontSize: "0.8rem" }}>
+                Loading messages...
+              </div>
+            )}
+            {!loadingHistory && messages.length === 0 && (
+              <div style={{ textAlign: "center", padding: "3rem", color: "#8a9bb5" }}>
+                <MessageSquare size={40} style={{ margin: "0 auto 1rem", opacity: 0.3 }} />
+                <div style={{ fontFamily: "Orbitron,monospace", fontSize: "0.85rem" }}>No messages yet in #{channel}</div>
+                <div style={{ fontSize: "0.85rem", marginTop: 4 }}>Be the first to say something!</div>
+              </div>
+            )}
+
+            {messages.map((msg, i) => {
+              const roleColor  = ROLE_COLORS[msg.role] || "#8a9bb5";
+              const planColor  = PLAN_COLORS[msg.plan] || "";
+              const prevMsg    = messages[i - 1];
+              const grouped    = prevMsg && prevMsg.username === msg.username &&
+                (new Date(msg.created_at).getTime() - new Date(prevMsg.created_at).getTime()) < 120000;
+              const isOptimistic = msg.id.startsWith("opt-");
+
               return (
-                <div key={msg.id} style={{ display: "flex", gap: "0.75rem", padding: "0.4rem 0.5rem", borderRadius: 2, transition: "background 0.15s" }}
+                <div key={msg.id}
+                  style={{ display: "flex", gap: "0.75rem", padding: grouped ? "0.1rem 0.5rem" : "0.5rem 0.5rem 0.1rem", borderRadius: 2, opacity: isOptimistic ? 0.6 : 1, transition: "opacity 0.2s" }}
                   onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.02)")}
                   onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
-                  <div style={{ width: 32, height: 32, background: `${msg.color}20`, border: `1px solid ${msg.color}40`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontFamily: "Orbitron, monospace", fontWeight: 700, fontSize: "0.65rem", color: msg.color }}>
-                    {msg.user[0].toUpperCase()}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: 2 }}>
-                      <span style={{ fontFamily: "Rajdhani, sans-serif", fontWeight: 700, fontSize: "0.9rem", color: msg.color }}>{msg.user}</span>
-                      <span style={{ background: `${badge.color}20`, color: badge.color, fontFamily: "Share Tech Mono, monospace", fontSize: "0.58rem", padding: "1px 5px", border: `1px solid ${badge.color}40` }}>{badge.label}</span>
-                      <span style={{ fontFamily: "Share Tech Mono, monospace", fontSize: "0.7rem", color: "#8a9bb5" }}>{msg.time}</span>
+
+                  {!grouped ? (
+                    <div style={{ width: 36, height: 36, borderRadius: "50%", background: `${roleColor}15`, border: `1px solid ${roleColor}40`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontFamily: "Orbitron,monospace", fontWeight: 900, fontSize: "0.7rem", color: roleColor }}>
+                      {(msg.avatar || msg.username?.[0] || "?").slice(0, 2).toUpperCase()}
                     </div>
-                    <div style={{ color: "#c8d8e8", fontSize: "0.95rem", lineHeight: 1.5 }}>{msg.text}</div>
+                  ) : (
+                    <div style={{ width: 36, flexShrink: 0 }} />
+                  )}
+
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    {!grouped && (
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: 2, flexWrap: "wrap" }}>
+                        <span style={{ fontFamily: "Rajdhani,sans-serif", fontWeight: 700, fontSize: "0.9rem", color: roleColor }}>{msg.username}</span>
+                        <span style={{ background: `${roleColor}15`, color: roleColor, fontFamily: "Share Tech Mono,monospace", fontSize: "0.57rem", padding: "1px 5px", border: `1px solid ${roleColor}30` }}>{ROLE_LABELS[msg.role] || "MEMBER"}</span>
+                        {msg.plan && msg.plan !== "none" && planColor && (
+                          <span style={{ background: `${planColor}15`, color: planColor, fontFamily: "Share Tech Mono,monospace", fontSize: "0.57rem", padding: "1px 5px", border: `1px solid ${planColor}30`, textTransform: "uppercase" }}>{msg.plan}</span>
+                        )}
+                        <span style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.67rem", color: "#8a9bb5" }}>{getTime(msg.created_at)}</span>
+                      </div>
+                    )}
+                    <div style={{ color: "#c8d8e8", fontSize: "0.95rem", lineHeight: 1.5, wordBreak: "break-word" }}>{msg.message}</div>
                   </div>
                 </div>
               );
             })}
+
+            {typingUsers.length > 0 && (
+              <div style={{ padding: "0.25rem 0.5rem 0.25rem 52px", color: "#8a9bb5", fontSize: "0.82rem", fontStyle: "italic" }}>
+                {typingUsers.slice(0, 3).join(", ")} {typingUsers.length === 1 ? "is" : "are"} typing...
+              </div>
+            )}
             <div ref={bottomRef} />
           </div>
 
           {/* Input */}
           <div style={{ background: "#040810", borderTop: "1px solid #1a2840", padding: "0.75rem 1.25rem" }}>
             {showEmoji && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginBottom: "0.75rem", background: "#080f1a", border: "1px solid #1a2840", padding: "0.5rem" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem", marginBottom: "0.75rem", background: "#0d1826", border: "1px solid #1a2840", padding: "0.6rem" }}>
                 {EMOJIS.map(e => (
-                  <button key={e} onClick={() => setInput(p => p + e)} style={{ background: "none", border: "none", fontSize: "1.2rem", cursor: "pointer", padding: "0.2rem" }}>{e}</button>
+                  <button key={e} onClick={() => setInput(p => p + e)}
+                    style={{ background: "none", border: "none", fontSize: "1.2rem", cursor: "pointer", padding: "0.2rem", transition: "transform 0.1s" }}
+                    onMouseEnter={ev => ((ev.currentTarget as HTMLElement).style.transform = "scale(1.3)")}
+                    onMouseLeave={ev => ((ev.currentTarget as HTMLElement).style.transform = "scale(1)")}>
+                    {e}
+                  </button>
                 ))}
               </div>
             )}
-            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-              <button onClick={() => setShowEmoji(p => !p)} style={{ background: "none", border: "none", color: "#8a9bb5", cursor: "pointer", padding: "0.4rem", transition: "color 0.2s" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "#00ff88")}
-                onMouseLeave={e => (e.currentTarget.style.color = "#8a9bb5")}>
-                <Smile size={18} />
-              </button>
-              <input
-                className="game-input"
-                style={{ flex: 1 }}
-                placeholder={`Message #${channel} as ${username}…`}
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && sendMessage()}
-              />
-              <button onClick={sendMessage} className="btn-primary" style={{ padding: "0.75rem 1rem", flexShrink: 0 }}>
-                <Send size={16} />
-              </button>
-            </div>
+
+            {!user ? (
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "1rem", padding: "0.6rem", background: "rgba(0,255,136,0.04)", border: "1px solid rgba(0,255,136,0.1)" }}>
+                <span style={{ color: "#8a9bb5", fontSize: "0.9rem" }}>You're browsing as a guest —</span>
+                <Link href="/login" style={{ color: "#00ff88", fontFamily: "Orbitron,monospace", fontSize: "0.76rem", textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }}>
+                  <LogIn size={13} /> Login to chat
+                </Link>
+                <Link href="/register" style={{ color: "#00d4ff", fontFamily: "Orbitron,monospace", fontSize: "0.76rem", textDecoration: "none" }}>Register free</Link>
+              </div>
+            ) : (
+              <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                <button onClick={() => setShowEmoji(p => !p)}
+                  style={{ background: "none", border: "none", color: showEmoji ? "#00ff88" : "#8a9bb5", cursor: "pointer", padding: "0.4rem", transition: "color 0.2s", flexShrink: 0 }}>
+                  <Smile size={20} />
+                </button>
+                <input
+                  className="game-input"
+                  style={{ flex: 1 }}
+                  placeholder={`Message #${channel}…`}
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
+                  maxLength={500}
+                  disabled={sending}
+                />
+                <button onClick={sendMessage} className="btn-primary"
+                  style={{ padding: "0.75rem 1rem", flexShrink: 0, opacity: (!input.trim() || sending) ? 0.5 : 1 }}
+                  disabled={!input.trim() || sending}>
+                  <Send size={16} />
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Right sidebar — online users */}
-        <div style={{ width: 180, background: "#080f1a", borderLeft: "1px solid #1a2840", padding: "1rem 0.75rem", display: "flex", flexDirection: "column", gap: "0.25rem", flexShrink: 0 }} className="sidebar-desktop">
-          <div style={{ fontFamily: "Share Tech Mono, monospace", fontSize: "0.65rem", color: "#8a9bb5", marginBottom: "0.5rem", letterSpacing: "0.1em" }}>ONLINE — {onlineCount}</div>
-          {ONLINE_USERS.map(u => {
-            const badge = ROLE_BADGES[u.role];
-            return (
-              <div key={u.name} style={{ display: "flex", alignItems: "center", gap: "0.4rem", padding: "0.3rem" }}>
-                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#00ff88", flexShrink: 0 }} />
-                <div>
-                  <div style={{ fontSize: "0.8rem", color: "#e8f4ff", fontFamily: "Rajdhani, sans-serif", fontWeight: 600 }}>{u.name}</div>
-                  <div style={{ fontSize: "0.6rem", color: badge.color, fontFamily: "Share Tech Mono, monospace" }}>{badge.label}</div>
-                </div>
-              </div>
-            );
-          })}
+        {/* Right sidebar */}
+        <div style={{ width: 180, background: "#080f1a", borderLeft: "1px solid #1a2840", padding: "1rem 0.75rem", overflowY: "auto", flexShrink: 0 }} className="sidebar-lg scrollbar-hide">
+          <div style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.62rem", color: "#8a9bb5", marginBottom: "0.75rem", letterSpacing: "0.1em" }}>ONLINE</div>
+          <div style={{ fontFamily: "Orbitron,monospace", fontWeight: 900, fontSize: "2rem", color: "#00ff88", marginBottom: "1.5rem" }}>{onlineCount}</div>
+          <div style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.62rem", color: "#8a9bb5", marginBottom: "0.5rem", letterSpacing: "0.1em" }}>RECENT CHATTERS</div>
+          {[...new Map(messages.slice().reverse().map(m => [m.username, m])).values()].slice(0, 10).map(m => (
+            <div key={m.username} style={{ display: "flex", alignItems: "center", gap: "0.4rem", padding: "0.3rem 0" }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: ROLE_COLORS[m.role] || "#8a9bb5", flexShrink: 0 }} />
+              <div style={{ fontSize: "0.82rem", color: "#e8f4ff", fontFamily: "Rajdhani,sans-serif", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{m.username}</div>
+            </div>
+          ))}
         </div>
       </div>
 
       <style>{`
-        @media (max-width: 767px) { .sidebar-desktop { display: none !important; } }
+        @media (max-width: 900px) { .sidebar-lg { display: none !important; } }
       `}</style>
     </div>
   );

@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     const payload = { id: user.id, username: user.username, role: user.role, plan: user.plan, avatar: user.avatar };
     const token   = signToken(payload);
     const res     = NextResponse.json({ success: true, user: payload });
-    res.cookies.set("kg254_session", token, { httpOnly: true, path: "/", maxAge: 604800, sameSite: "lax" });
+    res.cookies.set("ptk_session", token, { httpOnly: true, path: "/", maxAge: 604800, sameSite: "lax" });
     return res;
   } catch (e: any) {
     return NextResponse.json({ error: e.message || "Server error" }, { status: 500 });

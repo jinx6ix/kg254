@@ -32,7 +32,7 @@ export async function comparePassword(pw: string, hash: string): Promise<boolean
 export async function getSession(): Promise<SessionUser | null> {
   try {
     const cookieStore = await cookies();
-    const token = cookieStore.get("PTK AFRICA_session")?.value;
+    const token = cookieStore.get("ptk_session")?.value;
     if (!token) return null;
     return verifyToken(token);
   } catch { return null; }

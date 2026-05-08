@@ -1,4 +1,4 @@
-# KenyanGamer254 — K.G 254 Gaming Hub
+# PTK Africa — K.G 254 Gaming Hub
 **Next.js 15 · Supabase PostgreSQL + Realtime · Vercel Ready**
 
 ---
@@ -20,12 +20,12 @@ cp .env.example .env.local
 ```
 
 ### 3 — Create Your Admin Account
-After deploying, register at `/register` with username **KenyanGamer254**.
+After deploying, register at `/register` with username **PTK Africa**.
 Then run this in Supabase SQL Editor to make yourself admin:
 ```sql
 UPDATE public.users
 SET role = 'admin', plan = 'admin'
-WHERE username = 'KenyanGamer254';
+WHERE username = 'PTK Africa';
 ```
 
 ### 4 — Deploy to Vercel
@@ -114,4 +114,4 @@ To automate: integrate [Safaricom Daraja STK Push API](https://developer.safaric
 
 ---
 
-Built with 🎮 for **KenyanGamer254 — K.G 254** · Nairobi, Kenya 🇰🇪
+Built with 🎮 for **PTK Africa — K.G 254** · Nairobi, Kenya 🇰🇪

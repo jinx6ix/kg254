@@ -58,7 +58,7 @@ export default function SubscribePage() {
           {[
             ["Send", plan.priceStr],
             ["To M-Pesa Number", "0712 345 678"],
-            ["Account Name", "KenyanGamer254"],
+            ["Account Name", "PTK Africa"],
             ["Reference", user?.username || "your username"],
           ].map(([label, val]) => (
             <div key={label} style={{ display: "flex", justifyContent: "space-between", padding: "0.5rem 0", borderBottom: "1px solid #1a2840", fontSize: "0.9rem" }}>
@@ -165,7 +165,7 @@ export default function SubscribePage() {
         </div>
         <div style={{ textAlign: "center", marginTop: "3rem", padding: "1.5rem 2rem", background: "#080f1a", border: "1px solid #1a2840", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem", flexWrap: "wrap" }}>
           <Shield size={20} color="#00ff88" />
-          <span style={{ color: "#8a9bb5", fontSize: "0.9rem" }}>Payments via M-Pesa · Cancel anytime · Questions? DM <strong style={{ color: "#00ff88" }}>@KenyanGamer254</strong> on any platform</span>
+          <span style={{ color: "#8a9bb5", fontSize: "0.9rem" }}>Payments via M-Pesa · Cancel anytime · Questions? DM <strong style={{ color: "#00ff88" }}>@PTK Africa</strong> on any platform</span>
         </div>
       </div>
     </div>

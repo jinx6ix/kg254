@@ -13,7 +13,7 @@ function ShareMenu({ event }: { event: Event }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const url = typeof window !== "undefined" ? `${window.location.origin}/events/${event.id}` : "";
-  const text = `${event.title} — KenyanGamer254 · ${event.date}`;
+  const text = `${event.title} — PTK Africa · ${event.date}`;
   const copy = () => { navigator.clipboard.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 2000); };
   return (
     <div style={{ position: "relative" }}>

@@ -76,7 +76,7 @@ function TournamentCard({ t, userId }: { t: Tournament; userId?: string }) {
 
       <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", flexWrap: "wrap" }}>
         {t.status === "live" ? (
-          <a href="https://twitch.tv/KenyanGamer254" target="_blank" rel="noopener noreferrer" className="btn-danger" style={{ padding: "0.45rem 1.1rem", fontSize: "0.7rem" }}>Watch Live</a>
+          <a href="https://twitch.tv/PTK Africa" target="_blank" rel="noopener noreferrer" className="btn-danger" style={{ padding: "0.45rem 1.1rem", fontSize: "0.7rem" }}>Watch Live</a>
         ) : t.status === "ended" ? (
           <span style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.75rem", color: "#8a9bb5" }}>Tournament ended</span>
         ) : isFull && !registered ? (
@@ -131,7 +131,7 @@ export default function TournamentsPage() {
           <div style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.75rem", color: "#00ff88", marginBottom: 6, letterSpacing: "0.15em" }}>// K.G 254</div>
           <h1 className="section-title" style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>Tournaments</h1>
           <p style={{ color: "#8a9bb5", fontSize: "1.05rem", maxWidth: 600, marginBottom: "2rem" }}>
-            Compete in official KenyanGamer254 tournaments. Win cash prizes, get featured on stream, and earn community glory.
+            Compete in official PTK Africa tournaments. Win cash prizes, get featured on stream, and earn community glory.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "1rem", maxWidth: 560 }}>
             {[

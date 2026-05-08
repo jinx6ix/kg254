@@ -6,8 +6,8 @@ import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from "@/components/Toaster";
 
 export const metadata: Metadata = {
-  title: "KenyanGamer254 | K.G 254 - Gaming Hub",
-  description: "Official hub for KenyanGamer254 — tournaments, streams, events, eFootball, PUBG and more.",
+  title: "PTK Africa | K.G 254 - Gaming Hub",
+  description: "Official hub for PTK Africa — tournaments, streams, events, eFootball, PUBG and more.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

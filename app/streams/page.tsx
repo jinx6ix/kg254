@@ -30,12 +30,12 @@ export default function StreamsPage() {
         <div style={{ maxWidth: 1280, margin: "0 auto" }}>
           <div style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.75rem", color: "#00ff88", marginBottom: 6, letterSpacing: "0.15em" }}>// K.G 254 STREAMS</div>
           <h1 className="section-title" style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>Watch & Replay</h1>
-          <p style={{ color: "#8a9bb5", fontSize: "1.05rem", maxWidth: 600, marginBottom: "2rem" }}>Catch KenyanGamer254 live or replay past sessions.</p>
+          <p style={{ color: "#8a9bb5", fontSize: "1.05rem", maxWidth: 600, marginBottom: "2rem" }}>Catch PTK Africa live or replay past sessions.</p>
           <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
             {[
-              { label: "Twitch", href: "https://twitch.tv/KenyanGamer254", color: "#9147ff" },
-              { label: "YouTube", href: "https://youtube.com/@KenyanGamer254", color: "#ff2244" },
-              { label: "TikTok", href: "https://tiktok.com/@KenyanGamer254", color: "#00d4ff" },
+              { label: "Twitch", href: "https://twitch.tv/PTK Africa", color: "#9147ff" },
+              { label: "YouTube", href: "https://youtube.com/@PTK Africa", color: "#ff2244" },
+              { label: "TikTok", href: "https://tiktok.com/@PTK Africa", color: "#00d4ff" },
             ].map(({ label, href, color }) => (
               <a key={label} href={href} target="_blank" rel="noopener noreferrer"
                 style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: `${color}12`, border: `1px solid ${color}40`, color, padding: "0.55rem 1.2rem", textDecoration: "none", fontFamily: "Orbitron,monospace", fontSize: "0.76rem", fontWeight: 700, letterSpacing: "0.08em", transition: "background 0.2s" }}
@@ -65,7 +65,7 @@ export default function StreamsPage() {
         <div style={{ marginBottom: "3rem" }}>
           <div style={{ fontFamily: "Share Tech Mono,monospace", color: "#00ff88", fontSize: "0.75rem", letterSpacing: "0.1em", marginBottom: "1rem" }}>// LIVE NOW — WEEKLY CLASH #12</div>
           <div className="game-card" style={{ overflow: "hidden" }}>
-            {/* To embed real stream: replace this div with <iframe src="https://player.twitch.tv/?channel=KenyanGamer254&parent=yourdomain.com" ... /> */}
+            {/* To embed real stream: replace this div with <iframe src="https://player.twitch.tv/?channel=PTK Africa&parent=yourdomain.com" ... /> */}
             <div style={{ aspectRatio: "16/9", maxHeight: 500, background: "linear-gradient(135deg,#0d1826,#040810)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
               <div style={{ textAlign: "center" }}>
                 <div style={{ width: 80, height: 80, background: "rgba(0,255,136,0.1)", border: "2px solid #00ff88", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1rem" }} className="pulse-green float">
@@ -75,7 +75,7 @@ export default function StreamsPage() {
                 <div style={{ color: "#8a9bb5", fontSize: "0.85rem", marginBottom: "1.5rem", maxWidth: 400 }}>
                   Stream is live on Twitch. Click below to watch. (To embed, add your Twitch iframe after deployment.)
                 </div>
-                <a href="https://twitch.tv/KenyanGamer254" target="_blank" rel="noopener noreferrer" className="btn-primary">Watch on Twitch</a>
+                <a href="https://twitch.tv/PTK Africa" target="_blank" rel="noopener noreferrer" className="btn-primary">Watch on Twitch</a>
               </div>
               <div style={{ position: "absolute", top: 12, left: 12, display: "flex", alignItems: "center", gap: 5, background: "rgba(255,34,68,0.15)", border: "1px solid rgba(255,34,68,0.4)", padding: "4px 10px" }}>
                 <span className="live-dot" />

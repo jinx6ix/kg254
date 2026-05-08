@@ -9,14 +9,14 @@ export default function Footer() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "2rem", marginBottom: "2rem" }}>
           <div>
             <div style={{ fontFamily: "Orbitron, monospace", fontWeight: 900, fontSize: "1.3rem", color: "#00ff88", marginBottom: "0.5rem" }}>K.G 254</div>
-            <div style={{ fontFamily: "Share Tech Mono, monospace", fontSize: "0.7rem", color: "#8a9bb5", marginBottom: "1rem" }}>KENYANGAMER254</div>
+            <div style={{ fontFamily: "Share Tech Mono, monospace", fontSize: "0.7rem", color: "#8a9bb5", marginBottom: "1rem" }}>PTK AFRICA</div>
             <p style={{ color: "#8a9bb5", fontSize: "0.9rem", lineHeight: 1.6 }}>Kenya's top gaming hub — tournaments, streams, community and more.</p>
             <div style={{ display: "flex", gap: "0.75rem", marginTop: "1rem" }}>
               {[
-                { Icon: Video, href: "https://youtube.com/@KenyanGamer254", color: "#ff2244" },
-                { Icon: Radio, href: "https://twitch.tv/KenyanGamer254", color: "#9147ff" },
-                { Icon: AtSign, href: "https://twitter.com/KenyanGamer254", color: "#00d4ff" },
-                { Icon: Camera, href: "https://instagram.com/KenyanGamer254", color: "#ff6b00" },
+                { Icon: Video, href: "https://youtube.com/@PTK Africa", color: "#ff2244" },
+                { Icon: Radio, href: "https://twitch.tv/PTK Africa", color: "#9147ff" },
+                { Icon: AtSign, href: "https://twitter.com/PTK Africa", color: "#00d4ff" },
+                { Icon: Camera, href: "https://instagram.com/PTK Africa", color: "#ff6b00" },
               ].map(({ Icon, href, color }, i) => (
                 <a key={i} href={href} target="_blank" rel="noopener noreferrer"
                   style={{ width: 36, height: 36, border: "1px solid #1a2840", display: "flex", alignItems: "center", justifyContent: "center", color, transition: "all 0.2s", textDecoration: "none" }}>
@@ -59,7 +59,7 @@ export default function Footer() {
         <hr className="game-divider" />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem", marginTop: "1.5rem" }}>
           <div style={{ fontFamily: "Share Tech Mono, monospace", fontSize: "0.75rem", color: "#8a9bb5" }}>
-            © 2025 KenyanGamer254 · K.G 254 · All rights reserved
+            © 2025 PTK Africa · K.G 254 · All rights reserved
           </div>
           <div style={{ fontFamily: "Share Tech Mono, monospace", fontSize: "0.75rem", color: "#8a9bb5" }}>
             <span style={{ color: "#00ff88" }}>■</span> Nairobi, Kenya · Gaming Community

@@ -25,8 +25,8 @@ function ShareMenu({ postId }: { postId: string }) {
       {open && (
         <div style={{ position: "absolute", bottom: "120%", left: 0, background: "#0d1826", border: "1px solid #1a2840", padding: "0.5rem", zIndex: 100, minWidth: 160, boxShadow: "0 8px 32px rgba(0,0,0,0.6)" }}>
           {[
-            { label: "Twitter/X", href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent("Check this out on KenyanGamer254!")}`, color: "#1da1f2" },
-            { label: "WhatsApp", href: `https://wa.me/?text=${encodeURIComponent("Check this out on KenyanGamer254! " + url)}`, color: "#25d366" },
+            { label: "Twitter/X", href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent("Check this out on PTK Africa!")}`, color: "#1da1f2" },
+            { label: "WhatsApp", href: `https://wa.me/?text=${encodeURIComponent("Check this out on PTK Africa! " + url)}`, color: "#25d366" },
             { label: "Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, color: "#1877f2" },
           ].map(({ label, href, color }) => (
             <a key={label} href={href} target="_blank" rel="noopener noreferrer" style={{ display: "block", padding: "0.4rem 0.75rem", color, textDecoration: "none", fontSize: "0.85rem" }} onMouseEnter={e => (e.currentTarget.style.background="#1a2840")} onMouseLeave={e => (e.currentTarget.style.background="transparent")}>{label}</a>

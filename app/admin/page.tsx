@@ -728,7 +728,7 @@ function PostsTab() {
 
       {/* Admin post composer */}
       <div className="game-card" style={{ padding:"1.25rem", marginBottom:"1.25rem", borderColor:"rgba(0,255,136,0.2)" }}>
-        <div style={{ fontFamily:"Orbitron,monospace", fontSize:"0.75rem", color:"#00ff88", marginBottom:"0.75rem" }}>POST AS KENYANGAMER254</div>
+        <div style={{ fontFamily:"Orbitron,monospace", fontSize:"0.75rem", color:"#00ff88", marginBottom:"0.75rem" }}>POST AS PTK AFRICA</div>
         <textarea className="game-input" rows={3} placeholder="Post an announcement, news, tournament update..." value={newPost.content} onChange={e=>setNewPost(p=>({...p,content:e.target.value}))} style={{ resize:"vertical", marginBottom:"0.6rem" }}/>
         <div style={{ display:"flex", gap:"0.6rem", alignItems:"center", flexWrap:"wrap" }}>
           <select className="game-input" style={{ width:"auto", flex:1 }} value={newPost.game} onChange={e=>setNewPost(p=>({...p,game:e.target.value}))}>
@@ -852,7 +852,7 @@ function ChatTab() {
 
       {/* Admin broadcast */}
       <div className="game-card" style={{ padding:"1rem", marginBottom:"1rem", borderColor:"rgba(0,255,136,0.2)" }}>
-        <div style={{ fontFamily:"Orbitron,monospace", fontSize:"0.72rem", color:"#00ff88", marginBottom:"0.6rem" }}>SEND MESSAGE AS KENYANGAMER254 → #{channel}</div>
+        <div style={{ fontFamily:"Orbitron,monospace", fontSize:"0.72rem", color:"#00ff88", marginBottom:"0.6rem" }}>SEND MESSAGE AS PTK AFRICA → #{channel}</div>
         <div style={{ display:"flex", gap:"0.5rem" }}>
           <input className="game-input" style={{ flex:1 }} placeholder={`Message #${channel}...`} value={broadcast} onChange={e=>setBroadcast(e.target.value)} onKeyDown={e=>e.key==="Enter"&&sendBroadcast()}/>
           <button className="btn-primary" style={{ padding:"0.6rem 1rem", opacity:sending?0.7:1 }} onClick={sendBroadcast} disabled={sending}>
@@ -922,7 +922,7 @@ export default function AdminPage() {
           <Shield size={20} color="#00ff88"/>
           <div>
             <div style={{ fontFamily:"Orbitron,monospace", fontWeight:900, fontSize:"1.2rem", color:"#00ff88" }}>Admin Panel</div>
-            <div style={{ fontFamily:"Share Tech Mono,monospace", fontSize:"0.68rem", color:"#8a9bb5" }}>KenyanGamer254 · Full Control Dashboard</div>
+            <div style={{ fontFamily:"Share Tech Mono,monospace", fontSize:"0.68rem", color:"#8a9bb5" }}>PTK Africa · Full Control Dashboard</div>
           </div>
         </div>
         {(pendingCount>0||flaggedCount>0)&&(

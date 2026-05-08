@@ -16,10 +16,10 @@ const RECENT_EVENTS = [
   { title: "KG254 Weekly Clash #12", game: "eFootball Console", date: "Jun 8, 2025", prize: "KSh 5,000", status: "live", spots: 8 },
 ];
 const PLATFORMS = [
-  { name: "YouTube", sub: "12K subscribers", href: "https://youtube.com/@KenyanGamer254", Icon: Video, color: "#ff2244" },
-  { name: "Twitch", sub: "3.2K followers", href: "https://twitch.tv/KenyanGamer254", Icon: Radio, color: "#9147ff" },
-  { name: "TikTok", sub: "18K followers", href: "https://tiktok.com/@KenyanGamer254", Icon: Play, color: "#00d4ff" },
-  { name: "Twitter/X", sub: "5K followers", href: "https://twitter.com/KenyanGamer254", Icon: AtSign, color: "#1da1f2" },
+  { name: "YouTube", sub: "12K subscribers", href: "https://youtube.com/@PTK Africa", Icon: Video, color: "#ff2244" },
+  { name: "Twitch", sub: "3.2K followers", href: "https://twitch.tv/PTK Africa", Icon: Radio, color: "#9147ff" },
+  { name: "TikTok", sub: "18K followers", href: "https://tiktok.com/@PTK Africa", Icon: Play, color: "#00d4ff" },
+  { name: "Twitter/X", sub: "5K followers", href: "https://twitter.com/PTK Africa", Icon: AtSign, color: "#1da1f2" },
 ];
 
 export default function HomePage() {

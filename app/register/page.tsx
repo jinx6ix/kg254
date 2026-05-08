@@ -21,7 +21,7 @@ export default function RegisterPage() {
     const { error } = await register(form.username, form.email, form.password);
     setLoading(false);
     if (error) return toast.error(error);
-    toast.success(`Welcome to K.G 254, ${form.username}! 🔥`);
+    toast.success(`Welcome to PTK 254, ${form.username}! 🔥`);
     router.push("/");
   };
 
@@ -49,7 +49,7 @@ export default function RegisterPage() {
               <Gamepad2 size={24} color="#00ff88" />
             </div>
             <h1 style={{ fontFamily: "Orbitron,monospace", fontWeight: 900, fontSize: "1.5rem", color: "#e8f4ff", marginBottom: 4 }}>Create Account</h1>
-            <p style={{ color: "#8a9bb5", fontSize: "0.9rem" }}>Join the K.G 254 community — it's free</p>
+            <p style={{ color: "#8a9bb5", fontSize: "0.9rem" }}>Join the PTK 254 community — it's free</p>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>

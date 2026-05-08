@@ -1,5 +1,5 @@
 -- =====================================================
--- PTK AFRICA — K.G 254 Full Supabase Schema
+-- PTK AFRICA — PTK 254 Full Supabase Schema
 -- Run this in: supabase.com → SQL Editor → New Query
 -- =====================================================
 
@@ -190,9 +190,9 @@ ON CONFLICT DO NOTHING;
 INSERT INTO public.events (title, date, time, location, category, description, event_status, rsvps) VALUES
   ('KG254 Community Stream Night',   '2025-06-10', '8:00 PM EAT', 'Online — Twitch & YouTube',  'Stream',     'Join PTK AFRICA for a special community stream night with viewer games, challenges and giveaways.', 'published', 312),
   ('eFootball Spring Cup Day',       '2025-06-15', '2:00 PM EAT', 'Online — Discord Bracket',   'Tournament', '16-player eFootball Mobile tournament. Prize pool KSh 50,000. Livestreamed on YouTube.',              'published', 156),
-  ('Gaming Meetup — Nairobi',        '2025-06-28', '12:00 PM EAT','Westgate Mall, Nairobi',      'IRL',        'Meet K.G 254 in person! Console gaming stations, giveaways and food. Free entry for subscribers.',   'published', 200),
+  ('Gaming Meetup — Nairobi',        '2025-06-28', '12:00 PM EAT','Westgate Mall, Nairobi',      'IRL',        'Meet PTK 254 in person! Console gaming stations, giveaways and food. Free entry for subscribers.',   'published', 200),
   ('PUBG Legends Invitational',      '2025-07-05', '3:00 PM EAT', 'Online — Custom Lobby',      'Tournament', 'The biggest PUBG tournament on KG254. 24-player Trio event. Full stream.',                            'published', 95),
-  ('eFootball Tips & Tricks Workshop','2025-07-12','7:00 PM EAT', 'Online — YouTube Live',       'Workshop',   'K.G 254 breaks down advanced skill moves, positioning and meta strategies.',                         'published', 540)
+  ('eFootball Tips & Tricks Workshop','2025-07-12','7:00 PM EAT', 'Online — YouTube Live',       'Workshop',   'PTK 254 breaks down advanced skill moves, positioning and meta strategies.',                         'published', 540)
 ON CONFLICT DO NOTHING;
 
 -- ── STREAMS ───────────────────────────────────────────

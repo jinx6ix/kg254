@@ -55,7 +55,7 @@ export default function Navbar() {
             <Gamepad2 size={18} color="#040810" />
           </div>
           <div>
-            <div style={{ fontFamily: "Orbitron,monospace", fontWeight: 900, fontSize: "1rem", color: "#00ff88", lineHeight: 1 }}>K.G 254</div>
+            <div style={{ fontFamily: "Orbitron,monospace", fontWeight: 900, fontSize: "1rem", color: "#00ff88", lineHeight: 1 }}>PTK 254</div>
             <div style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.6rem", color: "#8a9bb5", letterSpacing: "0.15em" }}>PTK AFRICA</div>
           </div>
         </Link>

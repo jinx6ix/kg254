@@ -170,7 +170,7 @@ export default function CommunityPage() {
     <div style={{ paddingTop: 64 }}>
       <div style={{ background: "#080f1a", padding: "4rem 1.5rem 3rem", borderBottom: "1px solid #1a2840" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto" }}>
-          <div style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.75rem", color: "#00ff88", marginBottom: 6, letterSpacing: "0.15em" }}>// K.G 254</div>
+          <div style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.75rem", color: "#00ff88", marginBottom: 6, letterSpacing: "0.15em" }}>// PTK 254</div>
           <h1 className="section-title" style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>Community</h1>
           <p style={{ color: "#8a9bb5", fontSize: "1rem" }}>Share posts, tips, squad lookups and community updates.</p>
         </div>

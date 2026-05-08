@@ -130,7 +130,7 @@ export default function SubscribePage() {
         <div style={{ maxWidth: 700, margin: "0 auto" }}>
           <div style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.75rem", color: "#00ff88", marginBottom: 6, letterSpacing: "0.15em" }}>// JOIN THE SQUAD</div>
           <h1 className="section-title" style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>Subscribe</h1>
-          <p style={{ color: "#8a9bb5", fontSize: "1.05rem" }}>Pick your plan and unlock exclusive K.G 254 community access.</p>
+          <p style={{ color: "#8a9bb5", fontSize: "1.05rem" }}>Pick your plan and unlock exclusive PTK 254 community access.</p>
         </div>
       </div>
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "4rem 1.5rem" }}>

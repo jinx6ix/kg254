@@ -1,4 +1,4 @@
-# PTK Africa — K.G 254 Gaming Hub
+# PTK Africa — PTK 254 Gaming Hub
 **Next.js 15 · Supabase PostgreSQL + Realtime · Vercel Ready**
 
 ---
@@ -114,4 +114,4 @@ To automate: integrate [Safaricom Daraja STK Push API](https://developer.safaric
 
 ---
 
-Built with 🎮 for **PTK Africa — K.G 254** · Nairobi, Kenya 🇰🇪
+Built with 🎮 for **PTK Africa — PTK 254** · Nairobi, Kenya 🇰🇪

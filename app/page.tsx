@@ -201,7 +201,7 @@ export default function HomePage() {
             Join the <span style={{ color: "#00ff88" }}>Community</span>
           </h2>
           <p style={{ color: "#8a9bb5", fontSize: "1.1rem", lineHeight: 1.7, marginBottom: "2rem" }}>
-            Chat live, compete in tournaments, and stay updated on all K.G 254 events. Over 8,000 gamers already in the squad.
+            Chat live, compete in tournaments, and stay updated on all PTK 254 events. Over 8,000 gamers already in the squad.
           </p>
           <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
             <Link href="/chat" className="btn-primary">

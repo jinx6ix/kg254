@@ -8,7 +8,7 @@ export default function Footer() {
       <div style={{ maxWidth: 1280, margin: "0 auto" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "2rem", marginBottom: "2rem" }}>
           <div>
-            <div style={{ fontFamily: "Orbitron, monospace", fontWeight: 900, fontSize: "1.3rem", color: "#00ff88", marginBottom: "0.5rem" }}>K.G 254</div>
+            <div style={{ fontFamily: "Orbitron, monospace", fontWeight: 900, fontSize: "1.3rem", color: "#00ff88", marginBottom: "0.5rem" }}>PTK 254</div>
             <div style={{ fontFamily: "Share Tech Mono, monospace", fontSize: "0.7rem", color: "#8a9bb5", marginBottom: "1rem" }}>PTK AFRICA</div>
             <p style={{ color: "#8a9bb5", fontSize: "0.9rem", lineHeight: 1.6 }}>Kenya's top gaming hub — tournaments, streams, community and more.</p>
             <div style={{ display: "flex", gap: "0.75rem", marginTop: "1rem" }}>
@@ -59,7 +59,7 @@ export default function Footer() {
         <hr className="game-divider" />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem", marginTop: "1.5rem" }}>
           <div style={{ fontFamily: "Share Tech Mono, monospace", fontSize: "0.75rem", color: "#8a9bb5" }}>
-            © 2025 PTK Africa · K.G 254 · All rights reserved
+            © 2025 PTK Africa · PTK 254 · All rights reserved
           </div>
           <div style={{ fontFamily: "Share Tech Mono, monospace", fontSize: "0.75rem", color: "#8a9bb5" }}>
             <span style={{ color: "#00ff88" }}>■</span> Nairobi, Kenya · Gaming Community

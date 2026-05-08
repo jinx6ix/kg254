@@ -31,7 +31,7 @@ export default function LoginPage() {
             <Gamepad2 size={24} color="#00ff88" />
           </div>
           <h1 style={{ fontFamily: "Orbitron,monospace", fontWeight: 900, fontSize: "1.5rem", color: "#e8f4ff", marginBottom: 4 }}>Welcome Back</h1>
-          <p style={{ color: "#8a9bb5", fontSize: "0.9rem" }}>Log in to your K.G 254 account</p>
+          <p style={{ color: "#8a9bb5", fontSize: "0.9rem" }}>Log in to your PTK 254 account</p>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>

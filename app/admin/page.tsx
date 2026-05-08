@@ -639,7 +639,7 @@ function StreamsTab() {
       {form && (
         <Modal title={form.id?"Edit Stream":"Add Stream / VOD"} onClose={()=>setForm(null)}>
           <div style={{ display:"flex", flexDirection:"column", gap:"0.75rem" }}>
-            <Field label="Title *"><input className="game-input" value={form.title} onChange={e=>setForm((p:any)=>({...p,title:e.target.value}))} placeholder="KG254 Weekly Clash #12 — Live"/></Field>
+            <Field label="Title *"><input className="game-input" value={form.title} onChange={e=>setForm((p:any)=>({...p,title:e.target.value}))} placeholder="PTK AFRICA Weekly Clash #12 — Live"/></Field>
             <Field label="Stream / Video URL *"><input className="game-input" value={form.url} onChange={e=>setForm((p:any)=>({...p,url:e.target.value}))} placeholder="https://youtu.be/... or https://twitch.tv/..."/></Field>
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0.75rem" }}>
               <Field label="Platform *">
@@ -711,7 +711,7 @@ function PostsTab() {
     const d = await r.json();
     setPosting(false);
     if(d.error){toast.error(d.error);return;}
-    toast.success("Post published as KG254 ✅");
+    toast.success("Post published as K ✅");
     setNewPost({content:"",game:"General"});
     load();
   };

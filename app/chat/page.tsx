@@ -166,7 +166,7 @@ export default function ChatPage() {
         {/* Left sidebar */}
         <div style={{ width: 220, background: "#080f1a", borderRight: "1px solid #1a2840", display: "flex", flexDirection: "column", flexShrink: 0 }} className="sidebar-lg">
           <div style={{ padding: "1rem", borderBottom: "1px solid #1a2840" }}>
-            <div style={{ fontFamily: "Orbitron,monospace", fontWeight: 900, fontSize: "0.88rem", color: "#00ff88" }}>K.G 254 Chat</div>
+            <div style={{ fontFamily: "Orbitron,monospace", fontWeight: 900, fontSize: "0.88rem", color: "#00ff88" }}>PTK 254 Chat</div>
             <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 4 }}>
               <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#00ff88" }} className="pulse-green" />
               <span style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.65rem", color: "#00ff88" }}>

@@ -6,7 +6,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from "@/components/Toaster";
 
 export const metadata: Metadata = {
-  title: "PTK Africa | K.G 254 - Gaming Hub",
+  title: "PTK Africa | PTK 254 - Gaming Hub",
   description: "Official hub for PTK Africa — tournaments, streams, events, eFootball, PUBG and more.",
 };
 

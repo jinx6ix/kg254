@@ -49,8 +49,8 @@ export default function HomePage() {
             </div>
 
             <h1 style={{ fontFamily: "Orbitron, monospace", fontWeight: 900, fontSize: "clamp(2rem, 5vw, 3.5rem)", lineHeight: 1.1, marginBottom: "0.5rem" }}>
-              <span style={{ color: "#e8f4ff" }}>KENYAN</span><br />
-              <span style={{ color: "#00ff88" }} className="glitch">GAMER</span><br />
+              <span style={{ color: "#e8f4ff" }}>PTK</span><br />
+              <span style={{ color: "#00ff88" }} className="glitch">AFRICA</span><br />
               <span style={{ color: "#00d4ff" }}>254</span>
             </h1>
 

@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 
-export const JWT_SECRET = process.env.JWT_SECRET || "kg254-secret-change-in-prod";
+export const JWT_SECRET = process.env.JWT_SECRET || "PTK AFRICA-secret-change-in-prod";
 
 export interface SessionUser {
   id: string;
@@ -32,7 +32,7 @@ export async function comparePassword(pw: string, hash: string): Promise<boolean
 export async function getSession(): Promise<SessionUser | null> {
   try {
     const cookieStore = await cookies();
-    const token = cookieStore.get("kg254_session")?.value;
+    const token = cookieStore.get("PTK AFRICA_session")?.value;
     if (!token) return null;
     return verifyToken(token);
   } catch { return null; }

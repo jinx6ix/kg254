@@ -111,7 +111,7 @@ export default function SubscribePage() {
         )}
 
         <div style={{ background: "rgba(0,255,136,0.04)", border: "1px solid rgba(0,255,136,0.12)", padding: "1rem", marginBottom: "1.5rem", fontSize: "0.85rem", color: "#8a9bb5", lineHeight: 1.7 }}>
-          <strong style={{ color: "#00ff88" }}>How it works:</strong> Submit this form, then send <strong style={{ color: "#ff6b00" }}>{plan.priceStr}</strong> via M-Pesa to <strong style={{ color: "#e8f4ff" }}>0712 345 678</strong> using your username as reference. KG254 verifies and activates within 24 hours.
+          <strong style={{ color: "#00ff88" }}>How it works:</strong> Submit this form, then send <strong style={{ color: "#ff6b00" }}>{plan.priceStr}</strong> via M-Pesa to <strong style={{ color: "#e8f4ff" }}>0712 345 678</strong> using your username as reference. PTK AFRICA verifies and activates within 24 hours.
         </div>
 
         {user && (

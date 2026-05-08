@@ -13,7 +13,7 @@ const STATS = [
 const RECENT_EVENTS = [
   { title: "eFootball Spring Cup 2025", game: "eFootball Mobile", date: "Jun 15, 2025", prize: "KSh 50,000", status: "upcoming", spots: 16 },
   { title: "PUBG Nairobi Classic", game: "PUBG Mobile", date: "Jun 22, 2025", prize: "KSh 30,000", status: "upcoming", spots: 20 },
-  { title: "KG254 Weekly Clash #12", game: "eFootball Console", date: "Jun 8, 2025", prize: "KSh 5,000", status: "live", spots: 8 },
+  { title: "PTK AFRICA Weekly Clash #12", game: "eFootball Console", date: "Jun 8, 2025", prize: "KSh 5,000", status: "live", spots: 8 },
 ];
 const PLATFORMS = [
   { name: "YouTube", sub: "12K subscribers", href: "https://youtube.com/@PTK Africa", Icon: Video, color: "#ff2244" },
@@ -113,7 +113,7 @@ export default function HomePage() {
                 </div>
               </div>
               <div style={{ padding: "1rem" }}>
-                <div style={{ fontFamily: "Orbitron, monospace", fontSize: "0.9rem", color: "#e8f4ff", marginBottom: 4 }}>KG254 Live Session #47</div>
+                <div style={{ fontFamily: "Orbitron, monospace", fontSize: "0.9rem", color: "#e8f4ff", marginBottom: 4 }}>PTK AFRICA Live Session #47</div>
                 <div style={{ display: "flex", justifyContent: "space-between", color: "#8a9bb5", fontSize: "0.85rem" }}>
                   <span>3,241 viewers</span>
                   <span style={{ color: "#00ff88" }}>🇰🇪 Nairobi, Kenya</span>

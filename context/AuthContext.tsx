@@ -27,7 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(data.user || null);
       // Get token from cookie for socket use (stored in localStorage for client access)
       if (data.user) {
-        const stored = localStorage.getItem("kg254_token");
+        const stored = localStorage.getItem("PTK AFRICA_token");
         setToken(stored);
       }
     } catch { setUser(null); }
@@ -44,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Store raw JWT in localStorage for socket.io client access
     // We re-issue a non-httpOnly token just for socket auth
     const tokenRes = await fetch("/api/auth/token");
-    if (tokenRes.ok) { const td = await tokenRes.json(); setToken(td.token); localStorage.setItem("kg254_token", td.token); }
+    if (tokenRes.ok) { const td = await tokenRes.json(); setToken(td.token); localStorage.setItem("PTK AFRICA_token", td.token); }
     return {};
   };
 
@@ -54,14 +54,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (data.error) return { error: data.error };
     setUser(data.user);
     const tokenRes = await fetch("/api/auth/token");
-    if (tokenRes.ok) { const td = await tokenRes.json(); setToken(td.token); localStorage.setItem("kg254_token", td.token); }
+    if (tokenRes.ok) { const td = await tokenRes.json(); setToken(td.token); localStorage.setItem("PTK AFRICA_token", td.token); }
     return {};
   };
 
   const logout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     setUser(null); setToken(null);
-    localStorage.removeItem("kg254_token");
+    localStorage.removeItem("PTK AFRICA_token");
   };
 
   return <AuthContext.Provider value={{ user, loading, login, register, logout, token, refreshUser }}>{children}</AuthContext.Provider>;

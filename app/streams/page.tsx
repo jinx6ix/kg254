@@ -6,7 +6,7 @@ import Link from "next/link";
 const STREAMS = [
   { id: 1, title: "eFootball World Class vs Legendary AI", game: "eFootball Mobile", platform: "YouTube", views: "4.2K", duration: "2h 14m", date: "May 30, 2025", live: false },
   { id: 2, title: "PUBG Duo Ranked Grind — Diamond Push", game: "PUBG Mobile", platform: "Twitch", views: "1.8K", duration: "3h 02m", date: "May 28, 2025", live: false },
-  { id: 3, title: "KG254 Weekly Clash #12 — Tournament Stream", game: "eFootball Console", platform: "YouTube", views: "6.1K", duration: "4h 30m", date: "Jun 8, 2025", live: true },
+  { id: 3, title: "PTK AFRICA Weekly Clash #12 — Tournament Stream", game: "eFootball Console", platform: "YouTube", views: "6.1K", duration: "4h 30m", date: "Jun 8, 2025", live: true },
   { id: 4, title: "PUBG TDM & Classic — Road to Conqueror", game: "PUBG Mobile", platform: "TikTok", views: "22K", duration: "1h 45m", date: "May 25, 2025", live: false },
   { id: 5, title: "eFootball Pro Tips & Skill Moves Tutorial", game: "eFootball Mobile", platform: "YouTube", views: "8.3K", duration: "45m", date: "May 20, 2025", live: false },
   { id: 6, title: "PUBG Erangel Solo vs Squad Highlights", game: "PUBG PC", platform: "Twitch", views: "2.5K", duration: "2h 10m", date: "May 18, 2025", live: false },
@@ -71,7 +71,7 @@ export default function StreamsPage() {
                 <div style={{ width: 80, height: 80, background: "rgba(0,255,136,0.1)", border: "2px solid #00ff88", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1rem" }} className="pulse-green float">
                   <Play size={36} color="#00ff88" style={{ marginLeft: 5 }} />
                 </div>
-                <div style={{ fontFamily: "Orbitron,monospace", fontSize: "1rem", color: "#00ff88", marginBottom: 8 }}>KG254 Weekly Clash #12</div>
+                <div style={{ fontFamily: "Orbitron,monospace", fontSize: "1rem", color: "#00ff88", marginBottom: 8 }}>PTK AFRICA Weekly Clash #12</div>
                 <div style={{ color: "#8a9bb5", fontSize: "0.85rem", marginBottom: "1.5rem", maxWidth: 400 }}>
                   Stream is live on Twitch. Click below to watch. (To embed, add your Twitch iframe after deployment.)
                 </div>

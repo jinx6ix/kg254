@@ -63,7 +63,7 @@ npm run dev   # http://localhost:3000
 
 ## 🔑 Admin Panel (`/admin`)
 
-Login with your admin account, then enter the admin password (set in `ADMIN_PASSWORD` env var, default: `KG254Admin!`).
+Login with your admin account, then enter the admin password (set in `ADMIN_PASSWORD` env var, default: `PTK AFRICAAdmin!`).
 
 **What you can control:**
 - 👥 Users — view all, edit role/plan/status, ban, delete
@@ -106,7 +106,7 @@ Add these in **Vercel → Project → Settings → Environment Variables**:
 
 1. User picks plan on `/subscribe` and submits M-Pesa number
 2. Subscription saved as `pending` in Supabase
-3. User sends payment manually to KG254's M-Pesa
+3. User sends payment manually to PTK AFRICA's M-Pesa
 4. **Admin** goes to `/admin → Subscriptions` and clicks **Approve**
 5. Subscription activates → user role becomes `subscriber` automatically
 

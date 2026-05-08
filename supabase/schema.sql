@@ -182,16 +182,16 @@ CREATE POLICY "Service role subs"   ON public.subscriptions USING (auth.role() =
 INSERT INTO public.tournaments (title, game, date, prize, spots, format, status, description) VALUES
   ('eFootball Spring Cup 2025',  'eFootball Mobile',  '2025-06-15', 'KSh 50,000', 16, '1v1 Knockout',  'open',     'Open to all eFootball mobile players. Best-of-3 knockout rounds. Finals streamed live on YouTube.'),
   ('PUBG Nairobi Classic',       'PUBG Mobile',       '2025-06-22', 'KSh 30,000', 20, 'Squad (4v4)',   'open',     'Squad tournament. 5 matches on Erangel and Miramar. Top 3 squads win prizes. Must be Gold+ rank.'),
-  ('KG254 Weekly Clash #12',     'eFootball Console', '2025-06-08', 'KSh 5,000',  8,  '1v1 Knockout',  'live',     'Weekly console tournament, currently underway. Watch live on Twitch.'),
-  ('PUBG Legends Invitational',  'PUBG PC',           '2025-07-05', 'KSh 100,000',24, 'Trio (3v3)',    'upcoming', 'KG254 biggest PUBG tournament. Top 24 ranked Kenyan players. Full production stream.'),
+  ('PTK AFRICA Weekly Clash #12',     'eFootball Console', '2025-06-08', 'KSh 5,000',  8,  '1v1 Knockout',  'live',     'Weekly console tournament, currently underway. Watch live on Twitch.'),
+  ('PUBG Legends Invitational',  'PUBG PC',           '2025-07-05', 'KSh 100,000',24, 'Trio (3v3)',    'upcoming', 'PTK AFRICA biggest PUBG tournament. Top 24 ranked Kenyan players. Full production stream.'),
   ('eFootball Champions League', 'eFootball Mobile',  '2025-07-20', 'KSh 75,000', 32, 'League + KO',  'upcoming', '32-player league phase then knockout stage. Season passes for subscribers.')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO public.events (title, date, time, location, category, description, event_status, rsvps) VALUES
-  ('KG254 Community Stream Night',   '2025-06-10', '8:00 PM EAT', 'Online — Twitch & YouTube',  'Stream',     'Join PTK AFRICA for a special community stream night with viewer games, challenges and giveaways.', 'published', 312),
+  ('PTK AFRICA Community Stream Night',   '2025-06-10', '8:00 PM EAT', 'Online — Twitch & YouTube',  'Stream',     'Join PTK AFRICA for a special community stream night with viewer games, challenges and giveaways.', 'published', 312),
   ('eFootball Spring Cup Day',       '2025-06-15', '2:00 PM EAT', 'Online — Discord Bracket',   'Tournament', '16-player eFootball Mobile tournament. Prize pool KSh 50,000. Livestreamed on YouTube.',              'published', 156),
   ('Gaming Meetup — Nairobi',        '2025-06-28', '12:00 PM EAT','Westgate Mall, Nairobi',      'IRL',        'Meet PTK 254 in person! Console gaming stations, giveaways and food. Free entry for subscribers.',   'published', 200),
-  ('PUBG Legends Invitational',      '2025-07-05', '3:00 PM EAT', 'Online — Custom Lobby',      'Tournament', 'The biggest PUBG tournament on KG254. 24-player Trio event. Full stream.',                            'published', 95),
+  ('PUBG Legends Invitational',      '2025-07-05', '3:00 PM EAT', 'Online — Custom Lobby',      'Tournament', 'The biggest PUBG tournament on PTK AFRICA. 24-player Trio event. Full stream.',                            'published', 95),
   ('eFootball Tips & Tricks Workshop','2025-07-12','7:00 PM EAT', 'Online — YouTube Live',       'Workshop',   'PTK 254 breaks down advanced skill moves, positioning and meta strategies.',                         'published', 540)
 ON CONFLICT DO NOTHING;
 

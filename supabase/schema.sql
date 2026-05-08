@@ -179,6 +179,10 @@ CREATE POLICY "Service role subs"   ON public.subscriptions USING (auth.role() =
 -- =====================================================
 -- SEED DATA
 -- =====================================================
+
+-- Insert default admin user
+INSERT INTO public.users (username, email, password, role, plan, status, avatar, bio)
+VALUES ('PTK Africa', 'admin@example.com', 'admin_password_hash', 'admin', 'admin', 'active', '', '');
 INSERT INTO public.tournaments (title, game, date, prize, spots, format, status, description) VALUES
   ('eFootball Spring Cup 2025',  'eFootball Mobile',  '2025-06-15', 'KSh 50,000', 16, '1v1 Knockout',  'open',     'Open to all eFootball mobile players. Best-of-3 knockout rounds. Finals streamed live on YouTube.'),
   ('PUBG Nairobi Classic',       'PUBG Mobile',       '2025-06-22', 'KSh 30,000', 20, 'Squad (4v4)',   'open',     'Squad tournament. 5 matches on Erangel and Miramar. Top 3 squads win prizes. Must be Gold+ rank.'),

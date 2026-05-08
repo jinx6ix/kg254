@@ -63,7 +63,7 @@ npm run dev   # http://localhost:3000
 
 ## 🔑 Admin Panel (`/admin`)
 
-Login with your admin account, then enter the admin password (set in `ADMIN_PASSWORD` env var, default: `PTK AFRICAAdmin!`).
+Login with your admin account, then enter the admin password (set in `ADMIN_PASSWORD` env var, default: `ptkAdmin!`).
 
 **What you can control:**
 - 👥 Users — view all, edit role/plan/status, ban, delete

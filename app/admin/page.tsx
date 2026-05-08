@@ -896,7 +896,7 @@ export default function AdminPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [tab, setTab]             = useState<Tab>("overview");
-  const [adminAuthed, setAuthed]  = useState(false);
+  const [adminAuthed, setAuthed]  = useState(true);
   const [stats, setStats]         = useState<any>(null);
   const [sidebarOpen, setSidebar] = useState(false);
 

@@ -128,6 +128,26 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
+          {/* Mobile user info */}
+          {user && (
+            <div style={{ marginTop: "1rem", borderTop: "1px solid #1a2840", paddingTop: "0.75rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: roleColor }}>
+                <div style={{ width: 24, height: 24, background: `${roleColor}20`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.7rem", fontFamily: "Orbitron,monospace", fontWeight: 900, color: roleColor }}>
+                  {user.avatar || user.username[0].toUpperCase()}
+                </div>
+                <span>{user.username}</span>
+              </div>
+              <div style={{ fontFamily: "Share Tech Mono,monospace", fontSize: "0.65rem", color: "#8a9bb5", textTransform: "uppercase" }}>{user.role} · {user.plan === "none" ? "Free" : user.plan}</div>
+              <Link href="/profile" onClick={() => setOpen(false)} style={{ display: "flex", alignItems: "center", gap: 8, padding: "0.6rem 0", color: "#c8d8e8", textDecoration: "none", fontSize: "0.9rem", fontFamily: "Rajdhani,sans-serif" }}>
+                <User size={14} /> My Profile
+              </Link>
+              {user.role === "admin" && (
+                <Link href="/admin" onClick={() => setOpen(false)} style={{ display: "flex", alignItems: "center", gap: 8, padding: "0.6rem 0", color: "#00ff88", textDecoration: "none", fontSize: "0.9rem", fontFamily: "Rajdhani,sans-serif" }}>
+                  <Shield size={14} /> Admin Panel
+                </Link>
+              )}
+            </div>
+          )}
           <div style={{ marginTop: "1rem", display: "flex", gap: "0.75rem" }}>
             {user ? (
               <button onClick={handleLogout} className="btn-danger" style={{ padding: "0.5rem 1rem" }}>Log Out</button>

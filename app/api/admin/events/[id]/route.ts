@@ -7,7 +7,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (!session || session.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   const { id } = await params;
   const body = await req.json();
-  const allowed = ["title","date","time","location","category","description","event_status"];
+  const allowed = ["title","date","time","location","category","description","event_status","image_url","game","prize","spots","event_type"];
   const patch = Object.fromEntries(Object.entries(body).filter(([k]) => allowed.includes(k)));
   const db = createServerClient();
   await db.from("events").update(patch).eq("id", id);

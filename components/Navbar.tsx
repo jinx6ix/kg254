@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { href: "/streams", label: "Streams" },
   { href: "/tournaments", label: "Tournaments" },
   { href: "/events", label: "Events" },
+  { href: "/games", label: "Games" },
   { href: "/community", label: "Community" },
   { href: "/chat", label: "Live Chat" },
 ];

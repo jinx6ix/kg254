@@ -17,7 +17,21 @@ export async function POST(req: NextRequest) {
   if (!body.title || !body.date || !body.category)
     return NextResponse.json({ error: "title, date, category required" }, { status: 400 });
   const db = createServerClient();
-  const { data, error } = await db.from("events").insert({ title: body.title, date: body.date, time: body.time || "TBD", location: body.location || "Online", category: body.category, description: body.description || "", event_status: body.event_status || "published", rsvps: 0 }).select().single();
+  const { data, error } = await db.from("events").insert({
+    title: body.title,
+    date: body.date,
+    time: body.time || "TBD",
+    location: body.location || "Online",
+    category: body.category,
+    description: body.description || "",
+    event_status: body.event_status || "published",
+    rsvps: 0,
+    image_url: body.image_url || "",
+    game: body.game || "Other",
+    prize: body.prize || "",
+    spots: body.spots || 16,
+    event_type: body.event_type || "upcoming",
+  }).select().single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true, id: (data as any).id });
 }

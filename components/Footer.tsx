@@ -31,7 +31,7 @@ export default function Footer() {
             {[
               { href: "/", label: "Home" }, { href: "/streams", label: "Streams" },
               { href: "/tournaments", label: "Tournaments" }, { href: "/events", label: "Events" },
-              { href: "/community", label: "Community" }, { href: "/chat", label: "Live Chat" },
+              { href: "/games", label: "Games" }, { href: "/chat", label: "Live Chat" },
             ].map(l => (
               <Link key={l.href} href={l.href}
                 style={{ display: "block", color: "#8a9bb5", textDecoration: "none", fontSize: "0.95rem", padding: "0.25rem 0" }}>

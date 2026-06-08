@@ -439,9 +439,11 @@ function TournamentsTab() {
 /* ═══════════════════════════════════════════
    EVENTS TAB
 ═══════════════════════════════════════════ */
-const EMPTY_E = { title:"", date:"", time:"", location:"", category:"Stream", description:"", event_status:"published" };
+const EMPTY_E = { title:"", date:"", time:"", location:"", category:"Stream", description:"", event_status:"published", image_url:"", game:"Other", prize:"", spots:16, event_type:"upcoming" };
 const E_CATS  = ["Stream","Tournament","IRL","Workshop","Other"];
 const E_STATS = ["published","draft","cancelled"];
+const E_TYPES = ["upcoming","live"];
+const GAMES_FOR_EVENTS = ["eFootball Mobile","eFootball Console","PUBG Mobile","PUBG PC","Other"];
 
 function EventsTab() {
   const [items, setItems]     = useState<any[]>([]);
@@ -491,21 +493,33 @@ function EventsTab() {
       </div>
 
       {loading ? <div style={{ color:"#8a9bb5" }}>Loading...</div> : (
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))", gap:"0.75rem" }}>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(340px,1fr))", gap:"0.75rem" }}>
           {items.map(ev=>(
-            <div key={ev.id} className="game-card" style={{ padding:"1.1rem" }}>
-              <div style={{ display:"flex", justifyContent:"space-between", marginBottom:"0.6rem" }}>
-                <span style={{ background:`${CAT_COLORS[ev.category]||"#8a9bb5"}18`, color:CAT_COLORS[ev.category]||"#8a9bb5", border:`1px solid ${CAT_COLORS[ev.category]||"#8a9bb5"}40`, fontFamily:"Share Tech Mono,monospace", fontSize:"0.68rem", padding:"2px 7px" }}>{ev.category}</span>
-                <Badge v={ev.event_status}/>
-              </div>
-              <div style={{ fontFamily:"Orbitron,monospace", fontSize:"0.85rem", color:"#e8f4ff", marginBottom:"0.5rem", lineHeight:1.3 }}>{ev.title}</div>
-              <div style={{ color:"#8a9bb5", fontSize:"0.82rem", marginBottom:"0.75rem" }}>📅 {ev.date} · ⏰ {ev.time} · 📍 {ev.location}</div>
-              <div style={{ color:"#8a9bb5", fontSize:"0.8rem", marginBottom:"0.75rem" }}>👥 {ev.rsvps} RSVPs</div>
-              <div style={{ display:"flex", gap:"0.35rem" }}>
-                <Btn onClick={()=>setForm({...ev})} color="#00d4ff"><Edit size={13}/> Edit</Btn>
-                {ev.event_status!=="published"&&<Btn onClick={async()=>{await fetch(`/api/admin/events/${ev.id}`,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({event_status:"published"})});toast.success("Published");load();}} color="#00ff88">Publish</Btn>}
-                {ev.event_status==="published"&&<Btn onClick={async()=>{await fetch(`/api/admin/events/${ev.id}`,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({event_status:"draft"})});toast.success("Set to draft");load();}} color="#8a9bb5">Draft</Btn>}
-                <Btn onClick={()=>del(ev.id,ev.title)} color="#ff2244"><Trash2 size={13}/></Btn>
+            <div key={ev.id} className="game-card" style={{ padding:0, overflow:"hidden" }}>
+              {ev.image_url && (
+                <div style={{ aspectRatio:"16/9", overflow:"hidden", position:"relative"}}>
+                  <img src={ev.image_url} alt={ev.title} style={{ width:"100%", height:"100%", objectFit:"cover" }} onError={(e)=>{(e.target as HTMLImageElement).style.display="none"}}/>
+                  <div style={{ position:"absolute", top:8, right:8 }}>
+                    <span style={{ background:ev.event_type==="live"?"rgba(255,34,68,0.9)":"rgba(0,255,136,0.8)", color:"#040810", fontFamily:"Share Tech Mono,monospace", fontSize:"0.6rem", padding:"2px 6px", fontWeight:700}}>{ev.event_type==="live"?"🔴 LIVE":"SOON"}</span>
+                  </div>
+                </div>
+              )}
+              <div style={{ padding:"1.1rem" }}>
+                <div style={{ display:"flex", justifyContent:"space-between", marginBottom:"0.6rem", flexWrap:"wrap", gap:"0.3rem" }}>
+                  <span style={{ background:`${CAT_COLORS[ev.category]||"#8a9bb5"}18`, color:CAT_COLORS[ev.category]||"#8a9bb5", border:`1px solid ${CAT_COLORS[ev.category]||"#8a9bb5"}40`, fontFamily:"Share Tech Mono,monospace", fontSize:"0.68rem", padding:"2px 7px" }}>{ev.category}</span>
+                  {ev.game && ev.game !== "Other" && <span className="badge-cyan" style={{ fontSize:"0.62rem" }}>{ev.game}</span>}
+                  <Badge v={ev.event_status}/>
+                </div>
+                <div style={{ fontFamily:"Orbitron,monospace", fontSize:"0.85rem", color:"#e8f4ff", marginBottom:"0.5rem", lineHeight:1.3 }}>{ev.title}</div>
+                <div style={{ color:"#8a9bb5", fontSize:"0.82rem", marginBottom:"0.4rem" }}>📅 {ev.date} · ⏰ {ev.time} · 📍 {ev.location}</div>
+                {ev.prize && <div style={{ color:"#ff6b00", fontSize:"0.82rem", marginBottom:"0.4rem", fontFamily:"Share Tech Mono,monospace" }}>🏆 {ev.prize} · {ev.spots} spots</div>}
+                <div style={{ color:"#8a9bb5", fontSize:"0.8rem", marginBottom:"0.75rem" }}>👥 {ev.rsvps} RSVPs</div>
+                <div style={{ display:"flex", gap:"0.35rem", flexWrap:"wrap" }}>
+                  <Btn onClick={()=>setForm({...ev})} color="#00d4ff"><Edit size={13}/> Edit</Btn>
+                  {ev.event_status!=="published"&&<Btn onClick={async()=>{await fetch(`/api/admin/events/${ev.id}`,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({event_status:"published"})});toast.success("Published");load();}} color="#00ff88">Publish</Btn>}
+                  {ev.event_status==="published"&&<Btn onClick={async()=>{await fetch(`/api/admin/events/${ev.id}`,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({event_status:"draft"})});toast.success("Set to draft");load();}} color="#8a9bb5">Draft</Btn>}
+                  <Btn onClick={()=>del(ev.id,ev.title)} color="#ff2244"><Trash2 size={13}/></Btn>
+                </div>
               </div>
             </div>
           ))}
@@ -517,6 +531,12 @@ function EventsTab() {
         <Modal title={form.id?"Edit Event":"New Event"} onClose={()=>setForm(null)}>
           <div style={{ display:"flex", flexDirection:"column", gap:"0.75rem" }}>
             <Field label="Title *"><input className="game-input" value={form.title} onChange={e=>setForm((p:any)=>({...p,title:e.target.value}))} placeholder="eFootball Spring Cup Day"/></Field>
+            <Field label="Event Image URL"><input className="game-input" value={form.image_url} onChange={e=>setForm((p:any)=>({...p,image_url:e.target.value}))} placeholder="https://images.unsplash.com/photo-..."/></Field>
+            {form.image_url && (
+              <div style={{ marginTop: "-0.5rem" }}>
+                <img src={form.image_url} alt="Preview" style={{ width: "100%", aspectRatio: "16/9", objectFit: "cover", border: "1px solid #1a2840" }} onError={(e)=>{(e.target as HTMLImageElement).style.display="none"}}/>
+              </div>
+            )}
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0.75rem" }}>
               <Field label="Date *"><input className="game-input" type="date" value={form.date} onChange={e=>setForm((p:any)=>({...p,date:e.target.value}))}/></Field>
               <Field label="Time"><input className="game-input" value={form.time} onChange={e=>setForm((p:any)=>({...p,time:e.target.value}))} placeholder="8:00 PM EAT"/></Field>
@@ -525,11 +545,23 @@ function EventsTab() {
                   {E_CATS.map(c=><option key={c} value={c}>{c}</option>)}
                 </select>
               </Field>
+              <Field label="Type">
+                <select className="game-input" value={form.event_type} onChange={e=>setForm((p:any)=>({...p,event_type:e.target.value}))}>
+                  {E_TYPES.map(t=><option key={t} value={t}>{t === "live" ? "🔴 LIVE" : "Upcoming"}</option>)}
+                </select>
+              </Field>
+              <Field label="Game">
+                <select className="game-input" value={form.game} onChange={e=>setForm((p:any)=>({...p,game:e.target.value}))}>
+                  {GAMES_FOR_EVENTS.map(g=><option key={g} value={g}>{g}</option>)}
+                </select>
+              </Field>
               <Field label="Status">
                 <select className="game-input" value={form.event_status} onChange={e=>setForm((p:any)=>({...p,event_status:e.target.value}))}>
                   {E_STATS.map(s=><option key={s} value={s}>{s}</option>)}
                 </select>
               </Field>
+              <Field label="Prize Pool"><input className="game-input" value={form.prize} onChange={e=>setForm((p:any)=>({...p,prize:e.target.value}))} placeholder="KSh 50,000"/></Field>
+              <Field label="Spots Available"><input className="game-input" type="number" min={1} max={256} value={form.spots} onChange={e=>setForm((p:any)=>({...p,spots:parseInt(e.target.value)||16}))}/></Field>
             </div>
             <Field label="Location"><input className="game-input" value={form.location} onChange={e=>setForm((p:any)=>({...p,location:e.target.value}))} placeholder="Online — Twitch & YouTube"/></Field>
             <Field label="Description"><textarea className="game-input" rows={3} value={form.description} onChange={e=>setForm((p:any)=>({...p,description:e.target.value}))} placeholder="Event details..." style={{ resize:"vertical" }}/></Field>

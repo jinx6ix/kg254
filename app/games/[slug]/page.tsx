@@ -3,7 +3,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { Gamepad2, Trophy, Users, Video, Calendar, ExternalLink, ChevronRight, Star } from "lucide-react";
 
-const GAME_INFO = {
+const GAME_INFO: Record<string, {
+  title: string;
+  subtitle: string;
+  description: string;
+  color: string;
+  bgGradient: string;
+  stats: { label: string; value: string }[];
+  highlights: string[];
+  image: string;
+}> = {
   "eFootball Mobile": {
     title: "eFootball Mobile",
     subtitle: "Mobile Football Gaming",
@@ -94,7 +103,7 @@ const SLUG_TO_GAME: Record<string, string> = {
 };
 
 export default function GamePage({ params }: GamePageProps) {
-  const gameKey = SLUG_TO_GAME[params.slug] || "eFootball Mobile";
+  const gameKey = (SLUG_TO_GAME[params.slug] || "eFootball Mobile") as keyof typeof GAME_INFO;
   const game = GAME_INFO[gameKey];
 
   return (
